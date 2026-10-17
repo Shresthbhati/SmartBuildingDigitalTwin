@@ -1,0 +1,143 @@
+mqtt:
+  broker: "localhost"
+  port: 1883
+  topic: "building/+/temperature"
+  client_id: "smart-building-backend"
+
+database:
+  url: "sqlite:///./smart_building.db"
+
+app:
+  host: "0.0.0.0"
+  port: 8000
+  debug: true
+  cors_origins:
+    - "http://localhost:5173"
+    - "http://127.0.0.1:5173"
+
+simulation:
+  rooms:
+    - "room101"
+    - "room102"
+    - "room103"
+    - "room104"
+    - "room201"
+    - "room202"
+    - "room203"
+    - "room204"
+  temperature_bounds:
+    min: 20.0
+    max: 40.0
+  thresholds:
+    normal_max: 30.0
+    high_max: 35.0
+  history_limit: 100
+  activity_log_limit: 50
+
+# Sensor Simulator Configuration
+simulator:
+  enabled: true
+  interval_seconds: 5
+  seed: 42
+  sensors:
+    - room: "room101"
+      sensor_id: "temp-sensor-101"
+      baseline: 22.0
+      variation: 1.5
+      min_temp: 18.0
+      max_temp: 35.0
+    - room: "room102"
+      sensor_id: "temp-sensor-102"
+      baseline: 21.5
+      variation: 1.2
+      min_temp: 18.0
+      max_temp: 35.0
+    - room: "room103"
+      sensor_id: "temp-sensor-103"
+      baseline: 23.0
+      variation: 1.8
+      min_temp: 18.0
+      max_temp: 35.0
+    - room: "room104"
+      sensor_id: "temp-sensor-104"
+      baseline: 22.5
+      variation: 1.0
+      min_temp: 18.0
+      max_temp: 35.0
+    - room: "room201"
+      sensor_id: "temp-sensor-201"
+      baseline: 22.0
+      variation: 1.5
+      min_temp: 18.0
+      max_temp: 35.0
+    - room: "room202"
+      sensor_id: "temp-sensor-202"
+      baseline: 21.5
+      variation: 1.2
+      min_temp: 18.0
+      max_temp: 35.0
+    - room: "room203"
+      sensor_id: "temp-sensor-203"
+      baseline: 23.0
+      variation: 1.8
+      min_temp: 18.0
+      max_temp: 35.0
+    - room: "room204"
+      sensor_id: "temp-sensor-204"
+      baseline: 22.5
+      variation: 1.0
+      min_temp: 18.0
+      max_temp: 35.0
+
+# Retention Configuration
+retention:
+  enabled: true
+  raw_telemetry_days: 30
+  cleanup_interval_hours: 6
+  batch_size: 1000
+  dry_run: false
+
+# Aggregation Configuration
+aggregation:
+  max_bucket_interval_hours: 24
+  default_bucket_interval_minutes: 15
+  supported_intervals:
+    - "1m"
+    - "5m"
+    - "15m"
+    - "1h"
+    - "6h"
+    - "12h"
+    - "24h"
+
+# Alert Configuration
+alerts:
+  enabled: true
+  evaluation_interval_seconds: 30
+  stale_sensor_seconds: 120
+  thresholds:
+    temperature:
+      warning: 30.0
+      critical: 35.0
+      recovery: 28.0
+    low_temperature:
+      enabled: false
+      warning: 15.0
+      critical: 10.0
+  hysteresis:
+    enabled: true
+    threshold_gap: 0.5
+  max_occurrence_count: 1000
+
+# Anomaly Detection Configuration
+anomaly_detection:
+  enabled: true
+  rolling_window_size: 20
+  min_samples: 5
+  z_score_threshold: 3.0
+  spike_threshold: 5.0
+  drop_threshold: 5.0
+  sustained_deviation_threshold: 2.5
+  cooldown_seconds: 300
+  recovery_window: 10
+  warm_up_seconds: 60
