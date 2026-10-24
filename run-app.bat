@@ -5,7 +5,8 @@ rem To use a real Mosquitto broker instead, remove the next line.
 set ROOT=%~dp0
 set SIMULATOR_TRANSPORT=direct
 
-if not exist "%ROOT%frontend\node_moduleseact-router-dom" (
+if not exist "%ROOT%frontend
+ode_moduleseact-router-dom" (
     echo Installing frontend dependencies...
     pushd "%ROOT%frontend" && call npm install && popd
 )
