@@ -406,6 +406,33 @@ def test_stale_sensor_detection():
         _close_engine(engine, session, path)
 
 
+def test_stale_detection_works_against_persisted_readings():
+    """Regression: persisted (naive UTC) timestamps crashed the stale loop on subtraction."""
+    from app.models.sensor import SensorReading
+
+    engine, session, path = _make_engine()
+    try:
+        session.add(
+            SensorReading(
+                room="room103",
+                sensor_id="temp-sensor-103",
+                measurement="temperature",
+                value=22.0,
+                unit="celsius",
+                event_timestamp=_make_timestamp(30),
+                idempotency_key="stale-regression",
+            )
+        )
+        session.commit()
+        alert_service.evaluate_stale_sensors(db=session)  # must not raise
+        stale = session.query(Alert).filter(
+            Alert.room == "room103", Alert.alert_type == AlertType.STALE_SENSOR
+        )
+        assert stale.count() == 1
+    finally:
+        _close_engine(engine, session, path)
+
+
 # --------------------------------------------------------------------- #
 # 9. Invalid reading                                                    #
 # --------------------------------------------------------------------- #

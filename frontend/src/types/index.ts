@@ -89,10 +89,12 @@ export interface RetentionStatus {
 export interface SimulatorSensorConfig {
   room: string;
   sensor_id: string;
+  type?: string;
+  unit?: string;
   baseline: number;
   variation: number;
-  min_temp: number;
-  max_temp: number;
+  min_value?: number;
+  max_value?: number;
 }
 
 export interface SimulatorStatus {
@@ -100,8 +102,10 @@ export interface SimulatorStatus {
   running: boolean;
   interval_seconds: number;
   seed: number;
+  transport?: string;
   sensors: SimulatorSensorConfig[];
   current_temperatures: Record<string, number>;
+  injections?: { sensor_id: string; kind: string; magnitude: number; until: string }[];
 }
 
 // Building layout types

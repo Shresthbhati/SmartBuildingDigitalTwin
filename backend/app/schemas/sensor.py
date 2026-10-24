@@ -1,3 +1,4 @@
+from app.schemas.common import UTCModel
 from datetime import datetime
 from enum import StrEnum
 from pydantic import BaseModel, Field
@@ -6,6 +7,7 @@ from pydantic import BaseModel, Field
 class ReadingSource(StrEnum):
     SIMULATED = "simulated"
     MEASURED = "measured"
+    SCENARIO = "scenario"
 
 
 class RoomStatusEnum(StrEnum):
@@ -25,7 +27,7 @@ class SensorReadingCreate(BaseModel):
     idempotency_key: str | None = Field(default=None, max_length=100)
 
 
-class SensorReadingResponse(BaseModel):
+class SensorReadingResponse(UTCModel):
     id: int
     room: str
     sensor_id: str
@@ -41,7 +43,7 @@ class SensorReadingResponse(BaseModel):
         from_attributes = True
 
 
-class RoomStatusResponse(BaseModel):
+class RoomStatusResponse(UTCModel):
     room: str
     status: RoomStatusEnum
     current_temperature: float | None = None
@@ -51,7 +53,7 @@ class RoomStatusResponse(BaseModel):
         from_attributes = True
 
 
-class ActivityLogResponse(BaseModel):
+class ActivityLogResponse(UTCModel):
     id: int
     room: str
     message: str

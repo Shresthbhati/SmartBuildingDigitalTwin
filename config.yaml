@@ -1,7 +1,8 @@
 mqtt:
   broker: "localhost"
   port: 1883
-  topic: "building/+/temperature"
+  # All telemetry: building/<location-code>/<measurement>
+  topic: "building/+/+"
   client_id: "smart-building-backend"
 
 database:
@@ -16,15 +17,6 @@ app:
     - "http://127.0.0.1:5173"
 
 simulation:
-  rooms:
-    - "room101"
-    - "room102"
-    - "room103"
-    - "room104"
-    - "room201"
-    - "room202"
-    - "room203"
-    - "room204"
   temperature_bounds:
     min: 20.0
     max: 40.0
@@ -34,60 +26,165 @@ simulation:
   history_limit: 100
   activity_log_limit: 50
 
-# Sensor Simulator Configuration
+# Canonical building topology. Seeded into the database at startup (idempotent upsert);
+# the database is the runtime source of truth for rooms, sensors and assets.
+# Sensors with source "simulated" are driven by the sensor simulator using the
+# baseline/variation/min/max parameters below.
+topology:
+  building:
+    code: "hq"
+    name: "NEXUS Demo Building"
+    timezone: "Asia/Kolkata"
+  floors:
+    - level: 0
+      name: "Ground Floor"
+      elevation_m: 0.0
+      height_m: 4.0
+      rooms:
+        - code: "room101"
+          name: "Room 101"
+          x: 2.5
+          z: 2.5
+          sensors:
+            - {
+                sensor_id: "temp-sensor-101",
+                baseline: 22.0,
+                variation: 1.5,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+        - code: "room102"
+          name: "Room 102"
+          x: 12.5
+          z: 2.5
+          sensors:
+            - {
+                sensor_id: "temp-sensor-102",
+                baseline: 21.5,
+                variation: 1.2,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+        - code: "room103"
+          name: "Room 103"
+          x: 2.5
+          z: 10.0
+          sensors:
+            - {
+                sensor_id: "temp-sensor-103",
+                baseline: 23.0,
+                variation: 1.8,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+        - code: "room104"
+          name: "Room 104"
+          x: 12.5
+          z: 10.0
+          sensors:
+            - {
+                sensor_id: "temp-sensor-104",
+                baseline: 22.5,
+                variation: 1.0,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+      assets:
+        - { code: "ahu-f0", kind: "hvac", name: "AHU Ground", x: 18.0, z: 3.0 }
+        - code: "meter-f0"
+          kind: "meter"
+          name: "Ground Floor Main Meter"
+          x: 18.0
+          z: 10.0
+          sensors:
+            - {
+                sensor_id: "power-meter-f0",
+                type: "power_kw",
+                unit: "kW",
+                baseline: 14.0,
+                variation: 0.8,
+                min_value: 2.0,
+                max_value: 40.0,
+              }
+    - level: 1
+      name: "Floor 1"
+      elevation_m: 4.0
+      height_m: 4.0
+      rooms:
+        - code: "room201"
+          name: "Room 201"
+          x: 2.5
+          z: 2.5
+          sensors:
+            - {
+                sensor_id: "temp-sensor-201",
+                baseline: 22.0,
+                variation: 1.5,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+        - code: "room202"
+          name: "Room 202"
+          x: 12.5
+          z: 2.5
+          sensors:
+            - {
+                sensor_id: "temp-sensor-202",
+                baseline: 21.5,
+                variation: 1.2,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+        - code: "room203"
+          name: "Room 203"
+          x: 2.5
+          z: 10.0
+          sensors:
+            - {
+                sensor_id: "temp-sensor-203",
+                baseline: 23.0,
+                variation: 1.8,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+        - code: "room204"
+          name: "Room 204"
+          x: 12.5
+          z: 10.0
+          sensors:
+            - {
+                sensor_id: "temp-sensor-204",
+                baseline: 22.5,
+                variation: 1.0,
+                min_value: 18.0,
+                max_value: 35.0,
+              }
+      assets:
+        - { code: "ahu-f1", kind: "hvac", name: "AHU Floor 1", x: 18.0, z: 3.0 }
+        - code: "meter-f1"
+          kind: "meter"
+          name: "Floor 1 Main Meter"
+          x: 18.0
+          z: 10.0
+          sensors:
+            - {
+                sensor_id: "power-meter-f1",
+                type: "power_kw",
+                unit: "kW",
+                baseline: 11.0,
+                variation: 0.7,
+                min_value: 2.0,
+                max_value: 40.0,
+              }
+
+# Sensor Simulator Configuration (sensor definitions live under `topology`)
 simulator:
   enabled: true
   interval_seconds: 5
   seed: 42
-  sensors:
-    - room: "room101"
-      sensor_id: "temp-sensor-101"
-      baseline: 22.0
-      variation: 1.5
-      min_temp: 18.0
-      max_temp: 35.0
-    - room: "room102"
-      sensor_id: "temp-sensor-102"
-      baseline: 21.5
-      variation: 1.2
-      min_temp: 18.0
-      max_temp: 35.0
-    - room: "room103"
-      sensor_id: "temp-sensor-103"
-      baseline: 23.0
-      variation: 1.8
-      min_temp: 18.0
-      max_temp: 35.0
-    - room: "room104"
-      sensor_id: "temp-sensor-104"
-      baseline: 22.5
-      variation: 1.0
-      min_temp: 18.0
-      max_temp: 35.0
-    - room: "room201"
-      sensor_id: "temp-sensor-201"
-      baseline: 22.0
-      variation: 1.5
-      min_temp: 18.0
-      max_temp: 35.0
-    - room: "room202"
-      sensor_id: "temp-sensor-202"
-      baseline: 21.5
-      variation: 1.2
-      min_temp: 18.0
-      max_temp: 35.0
-    - room: "room203"
-      sensor_id: "temp-sensor-203"
-      baseline: 23.0
-      variation: 1.8
-      min_temp: 18.0
-      max_temp: 35.0
-    - room: "room204"
-      sensor_id: "temp-sensor-204"
-      baseline: 22.5
-      variation: 1.0
-      min_temp: 18.0
-      max_temp: 35.0
+  # "mqtt" publishes through the broker; "direct" ingests in-process (no broker needed).
+  # Override per environment with the SIMULATOR_TRANSPORT env var.
+  transport: "mqtt"
 
 # Retention Configuration
 retention:
@@ -138,6 +235,42 @@ anomaly_detection:
   spike_threshold: 5.0
   drop_threshold: 5.0
   sustained_deviation_threshold: 2.5
+  sustained_min_readings: 3
   cooldown_seconds: 300
   recovery_window: 10
   warm_up_seconds: 60
+
+# Replay (Building Time Travel). Replay is bounded by retention.raw_telemetry_days.
+replay:
+  max_points_per_sensor: 600
+  event_limit: 500
+  context_window_minutes: 15
+
+# Scenario lab parameter bounds (validated server-side, mirrored in the UI form)
+scenario:
+  max_window_minutes: 1440
+  step_seconds: 60
+  baseline_offset: [-10.0, 10.0]
+  variation_scale: [0.0, 5.0]
+  power_setpoint_kw: [0.0, 60.0]
+
+# Rule-based maintenance flags (v1)
+maintenance:
+  lookback_days: 7
+  anomaly_count_flag: 3
+  alert_recurrence_flag: 3
+  time_in_warning_ratio: 0.25
+  flapping_transitions: 4
+  forecast_min_points: 12
+  forecast_lookback_minutes: 30
+
+# Authentication. DEV-ONLY demo users and secret: set AUTH_SECRET and replace users
+# before exposing this beyond localhost. Reads are open; mutating endpoints need a token.
+auth:
+  enabled: true
+  secret: "dev-only-change-me"
+  token_minutes: 480
+  users:
+    - { username: "viewer", password: "viewer-demo", role: "viewer" }
+    - { username: "operator", password: "operator-demo", role: "operator" }
+    - { username: "admin", password: "admin-demo", role: "admin" }

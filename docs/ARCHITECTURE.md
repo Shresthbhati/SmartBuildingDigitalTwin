@@ -1,307 +1,90 @@
-# Smart Building Digital Twin - Architecture Documentation
+# NEXUS — Architecture
 
-## Current Architecture (Phase 0 Baseline)
+What exists today. For where it is going see [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md); for what is verified and what is not see [FEATURE_STATUS.md](FEATURE_STATUS.md). Rules that govern the design are in [VISION.md](VISION.md).
 
-### System Overview
-The current implementation is a minimal Flask-based dashboard with MQTT-connected temperature sensors.
-
-### Components
-
-#### Backend (`app.py`)
-- **Framework**: Flask 3.1.3
-- **MQTT Client**: paho-mqtt 2.1.0 (broker: test.mosquitto.org:1883)
-- **State Management**: In-memory dictionaries
-  - `latest_data`: Dict[room_id, {temperature, timestamp, status}]
-  - `history`: Dict[room_id, List[{temperature, timestamp}]]
-  - `activity_log`: List[{room, temperature, timestamp, event}]
-  - `room_status`: Dict[room_id, status] (NORMAL/WARNING/CRITICAL)
-- **Thresholds**: WARNING > 25°C, CRITICAL > 30°C
-- **API Endpoints**:
-  - `GET /api/latest` - Latest readings for all rooms
-  - `GET /api/history/<room>` - Historical data for a room
-  - `GET /api/activity` - Recent activity log
-  - `GET /api/status` - Room statuses
-- **WebSocket**: None (polling-based frontend)
-
-#### Sensor Simulator (`sensor.py`)
-- **Protocol**: MQTT v3.1.1
-- **Topics**: `building/roomXXX/temperature` (rooms 101-104)
-- **Simulation**: Random walk with bounds [20, 40]
-- **Soft Ceiling**: 30°C (reduced upward drift)
-- **Interval**: 2 seconds
-- **Payload**: JSON `{temperature: float, timestamp: ISO8601}`
-
-#### Frontend (`templates/index.html`)
-- **Styling**: Dark theme, CSS Grid layout
-- **Charts**: Chart.js line charts per room
-- **Polling**: 5-second interval for all API endpoints
-- **Features**: Room cards, temperature display, status badges, activity log
-
-### Data Flow
-```
-sensor.py (MQTT Publish) → test.mosquitto.org → app.py (MQTT Subscribe) → In-Memory State → Flask API → Frontend (Polling)
-```
-
-### Limitations (Current State)
-1. **No persistence** - All data lost on restart
-2. **No deterministic simulation** - Random walk, non-reproducible
-3. **No WebSocket** - Polling introduces latency
-4. **No 3D visualization** - 2D charts only
-5. **No alerting engine** - Thresholds only, no escalation
-6. **No historical database** - In-memory history limited
-7. **Single sensor type** - Temperature only
-8. **External MQTT broker** - test.mosquitto.org dependency
-
----
-
-## Target Architecture (Phases 1-20)
-
-### High-Level Design
+## System at a glance
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Frontend (React/TypeScript)              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │ 3D Building  │  │  Dashboards  │  │  Alert Management    │  │
-│  │  (Three.js)  │  │  (Recharts)  │  │  (Acknowledge/Resolve)│  │
-│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │ WebSocket (Socket.IO)
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      Backend (FastAPI)                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │  REST API    │  │  WebSocket   │  │  Alert Engine        │  │
-│  │  (CRUD)      │  │  Server      │  │  (Rules/Escalation)  │  │
-│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
-│  │  MQTT Ingest │  │  Simulation  │  │  Persistence         │  │
-│  │  Service     │  │  Engine      │  │  (SQLAlchemy/SQLite) │  │
-│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-              ┌───────────────┼───────────────┐
-              ▼               ▼               ▼
-        ┌──────────┐   ┌──────────┐    ┌────────────┐
-        │  SQLite  │   │  Local   │    │  MQTT      │
-        │  (Main)  │   │  Broker  │    │  (Optional)│
-        └──────────┘   └──────────┘    └────────────┘
+                       MQTT (building/<location>/<measurement>)
+  devices / simulator ───────────────────────────────┐
+        │  (or in-process "direct" transport)        ▼
+        └──────────────────────────────► mqtt_service.ingest()
+                                                │ validate · idempotency · persist
+                                                ▼
+   ┌──────────── SQLite (WAL) ─────────────┐   alert_service / anomaly_service
+   │ sensor_readings  room_status          │   (threshold rules · rolling z-score)
+   │ alerts  anomaly_events                │            │ every status change
+   │ lifecycle_events (append-only audit)  │◄───────────┘ writes an audit row
+   │ buildings floors rooms assets sensors │
+   │ scenario_runs                         │   after COMMIT only ──► EventBus ──► /ws/events
+   └───────────────────────────────────────┘                                      │
+        ▲ REST (FastAPI)                                                          ▼
+        └────────────────────────────── React + three.js + zustand store ◄── RealtimeClient
 ```
 
-### Technology Stack
+* **Backend** `backend/app` — FastAPI, SQLAlchemy 2, Alembic, paho-mqtt, PyJWT.
+* **Frontend** `frontend/src` — React 19, Vite, react-router, zustand, @react-three/fiber, GSAP.
+* **Config** `config.yaml` (override path with `CONFIG_PATH`; secrets/URLs with env vars).
 
-| Layer | Technology | Version |
-|-------|------------|---------|
-| Frontend | React + TypeScript + Vite | 18.x / 5.x |
-| 3D Graphics | Three.js + React Three Fiber | Latest |
-| Charts | Recharts | Latest |
-| State | Zustand / React Query | Latest |
-| Backend | FastAPI | 0.109+ |
-| Database | SQLAlchemy + SQLite | 2.0+ |
-| Real-time | Socket.IO | Latest |
-| MQTT | paho-mqtt / Eclipse Mosquitto (local) | Latest |
-| Simulation | Deterministic PRNG (PCG64) | NumPy |
-| Testing | Pytest + Playwright | Latest |
+## Backend
 
-### Database Schema (SQLAlchemy Models)
+### Canonical topology
+`models/topology.py`: `Building → Floor → Room`, plus `Asset` (equipment on a floor, optionally in a room) and `Sensor` (in a room or on an asset). `config.yaml → topology:` is the source; `topology_service.seed_topology` upserts it at startup (structure and simulation parameters come from config, runtime state such as `last_seen_at` is preserved). Nothing derives IDs by string manipulation: `GET /api/topology` returns the tree, `GET /api/sensors` the flat list.
 
-```python
-# Core Models
-class Room(Base):
-    id: str(PK)  # e.g., "101"
-    name: str  # "Conference Room A"
-    floor: int
-    x: float  # 3D position
-    y: float
-    z: float
-    sensor_types: JSON  # ["temperature", "humidity", "co2", "occupancy"]
+Telemetry's `room` field is a *location code*: a room code, or an asset code for meters (`meter-f0`).
 
+### Ingestion
+`mqtt_service.ingest(room, payload)` is the single entry point, used by the MQTT callback and by the simulator's in-process `direct` transport (no broker needed for development/CI). It is idempotent on `idempotency_key`, stamps `Sensor.last_seen_at` from the reading's *event* time, updates `room_status` for temperature only, and queues a `reading` event.
 
-class SensorReading(Base):
-    id: int(PK, autoincrement)
-    room_id: str(FK)
-    sensor_type: str  # "temperature", "humidity", "co2", "occupancy"
-    value: float
-    timestamp: DateTime  # UTC, timezone-aware
-    quality: str  # "GOOD", "UNCERTAIN", "BAD"
+### Alerts vs anomalies (deliberately different things)
+* **Alerts** (`alert_service`): fixed temperature thresholds with hysteresis, stale-sensor and invalid-reading detection; lifecycle OPEN → ACKNOWLEDGED → RESOLVED.
+* **Anomalies** (`anomaly_service`): rolling per-sensor z-score. The baseline is computed from readings *before* the one being judged and flagged readings stay out of it. A moderate deviation must persist for `sustained_min_readings` before it is reported. Open anomalies are re-adopted from the DB after a restart.
 
+### Lifecycle audit and events
+`services/lifecycle.track_transition` appends a `lifecycle_events` row for every alert/anomaly transition (create, acknowledge, resolve, including automatic recovery by `system`) and queues a WebSocket event on the session. Queued events are published **after commit** and dropped on rollback, so a client that reacts to an event and re-reads over REST always sees the committed state.
 
-class Alert(Base):
-    id: int(PK, autoincrement)
-    room_id: str(FK)
-    sensor_type: str
-    severity: str  # "INFO", "WARNING", "CRITICAL"
-    message: str
-    value: float
-    threshold: float
-    acknowledged: bool
-    acknowledged_by: str(nullable)
-    acknowledged_at: DateTime(nullable)
-    resolved: bool
-    resolved_at: DateTime(nullable)
-    created_at: DateTime
+### Real-time: `/ws/events`
+`core/events.EventBus` is fed from worker threads and fans out to asyncio queues. Envelope: `{seq, type: reading|alert|anomaly|health, ts, data}`. The first message is a `health` event with `hello: true` and the current `seq` (the client's baseline); after that `seq` increases by exactly 1, so any jump is a detectable gap. A health event every 10 s doubles as a heartbeat. A slow consumer is disconnected (not silently starved) so it resyncs over REST.
 
+### Replay (Building Time Travel)
+`GET /api/replay?start&end&floor?` returns per-sensor points (raw below `max_points`, otherwise SQL-bucketed with `n` samples per point), the alerts/anomalies overlapping the window, and lifecycle events — from the audit table, with entities that predate it reconstructed from their stored timestamps and marked `source: "derived"`. Bounded by retention (30 d) and says so (`clamped_to_retention`, `truncated`). Gaps are returned as gaps.
 
-class SimulationState(Base):
-    id: int(PK, autoincrement)
-    room_id: str(FK)
-    sensor_type: str
-    seed_state: bytes  # PRNG state for reproducibility
-    last_value: float
-    updated_at: DateTime
+### Investigation context
+`GET /api/anomalies/{id}/context`: the sensor's room/floor/assets, alerts and anomalies within ±window, and events on sibling sensors, as nodes and edges. Edges are either `structural` (topology) or `temporal_cooccurrence` (timing). Nothing is called a cause.
+
+### Scenario lab
+`POST /api/scenarios/run` re-runs the seeded sensor model (`services/sim_model.py`, shared with the live simulator) twice in memory — baseline and modified — with identical noise so differences come only from the parameters. It never writes `sensor_readings`; only an explicit save writes `scenario_runs`. `POST /api/simulator/inject` (spike | drift | offline) makes the *live* simulator misbehave for demos/E2E; those readings carry `source=scenario`.
+
+### Anticipate
+`maintenance_service`: rule-based flags (anomaly frequency, alert recurrence, time in warning, flapping, stale) each with evidence links, labelled "rule-based (v1)"; a linear-trend forecast labelled "estimated" with a prediction band that abstains when data is stale or sparse; energy (kW vs kWh, peak, coverage) from the **simulated** meters.
+
+### Auth
+`core/security.py`: JWT (HS256) with roles viewer < operator < admin. Reads are open; every mutating endpoint requires a role; the actor recorded in the audit trail is the token's user. `auth.enabled: false` runs everything as an anonymous admin for local development. **Demo users and the default secret in `config.yaml` are dev-only.**
+
+### Schema management
+Alembic (`backend/alembic`, run at startup by `core/migrations.run_migrations`). The baseline migration creates any missing table, so databases created by the old `create_all` upgrade in place.
+
+## Frontend
+
+* **Store** (`src/store`): one normalized zustand store — topology, latest reading per sensor, alerts, anomalies, connection state, selection, mode, timeline cursor (`'live'` or epoch ms). Scene objects read it; they never call the API. Pure logic lives in `reducers.ts` and `replay.ts` and is unit tested.
+* **Time travel**: `selectors.snapshotFor` resolves a sensor either live (streamed value) or at the cursor (`stateAt` over replayed points). In time travel it never falls back to the live value.
+* **Realtime** (`src/realtime`): `RealtimeClient` — exponential backoff with jitter, stale-connection timeout, gap/reconnect detection → REST resync; `useRealtime` polls the REST snapshot every 5 s whenever the socket is not live.
+* **3D** (`src/building`): geometry from topology; instanced sensor nodes; pulses only when a reading's counter changes; floor isolation; GSAP intro (skippable, skipped under `prefers-reduced-motion`); camera focus helper; energy flow only where a power sensor reports; labels are a DOM layer projected from the camera; keyboard-navigable table fallback (also used when WebGL is unavailable).
+* **Modes/routes**: `/observe`, `/investigate`, `/anticipate`, `/experiment`, `/system`; deep links `?floor=&room=&sensor=&t=`.
+* **Truthfulness in the UI**: every status has icon + label; data provenance badges (Simulated / Scenario-injected / Measured / Estimated); persistent mode/source badge; lifecycle actions show success only after the backend confirms.
+
+## Running it
+
+```bash
+# backend (no broker needed)
+cd backend && SIMULATOR_TRANSPORT=direct python -m uvicorn app.main:app --port 8000
+# frontend
+cd frontend && npm install && npm run dev
+# or everything incl. Mosquitto
+docker compose up
 ```
 
-### Deterministic Simulation Engine
+Tests: `cd backend && python -m pytest` · `cd frontend && npx tsc -b && npm test && npm run build` · E2E: `cd frontend && npm run e2e` (set `PW_CHANNEL=chrome` to use an installed Chrome).
 
-- **PRNG**: NumPy PCG64 (per-room, per-sensor independent streams)
-- **State Persistence**: PRNG state saved to database every N ticks
-- **Replay**: Given seed + tick count, exact values reproducible
-- **Models**:
-  - Temperature: Seasonal + daily cycle + noise + HVAC response
-  - Humidity: Inverse correlation with temperature + noise
-  - CO2: Occupancy-driven + ventilation decay
-  - Occupancy: Schedule-based (business hours) + random variation
-
-### Alert Engine
-
-- **Rules**: Configurable per sensor type per room
-- **Escalation**: WARNING → CRITICAL → EMERGENCY (time-based)
-- **Notifications**: WebSocket push, in-app, (future: email/webhook)
-- **Acknowledgment**: Operator acknowledgment with audit trail
-- **Auto-resolution**: When value returns to normal range
-
-### API Contract (OpenAPI 3.0)
-
-#### REST Endpoints
-```
-GET    /api/v1/rooms                    # List all rooms
-GET    /api/v1/rooms/{room_id}          # Room details + current readings
-GET    /api/v1/rooms/{room_id}/readings # Historical readings (query: sensor_type, from, to, limit)
-GET    /api/v1/alerts                   # List alerts (query: severity, acknowledged, room_id)
-PATCH  /api/v1/alerts/{alert_id}/ack    # Acknowledge alert
-PATCH  /api/v1/alerts/{alert_id}/resolve # Resolve alert
-GET    /api/v1/simulation/state         # Get simulation state (for replay)
-POST   /api/v1/simulation/seed          # Set simulation seed
-POST   /api/v1/simulation/step          # Advance simulation by N steps
-```
-
-#### WebSocket Events
-```
-Server → Client:
-  - reading: {room_id, sensor_type, value, timestamp}
-  - alert_created: Alert
-  - alert_acknowledged: {alert_id, by, at}
-  - alert_resolved: {alert_id, at}
-  - room_status: {room_id, status}
-
-Client → Server:
-  - subscribe: {room_ids?, sensor_types?}
-  - acknowledge_alert: {alert_id}
-  - set_simulation_speed: {multiplier}
-```
-
-### MQTT Integration
-
-- **Local Broker**: Eclipse Mosquitto (Docker or native)
-- **Topics**: `building/{room_id}/{sensor_type}` (structured)
-- **QoS**: 1 (at least once)
-- **Bridge**: Optional bridge to external brokers
-
-### 3D Visualization (Three.js)
-
-- **Scene**: Building model (GLTF) or procedural floors/rooms
-- **Rooms**: Interactive meshes with color-coded status
-- **Sensors**: Visual indicators on room surfaces
-- **Camera**: OrbitControls + preset views (floor, room, overview)
-- **Performance**: InstancedMesh for sensors, LOD for geometry
-
-### Configuration
-
-```yaml
-# config.yaml
-building:
-  name: "Smart Building Demo"
-  timezone: "UTC"
-  floors: 2
-  rooms_per_floor: 4
-
-simulation:
-  tick_interval_seconds: 10
-  seed: 42
-  persist_interval_ticks: 100
-
-sensors:
-  temperature:
-    min: 15
-    max: 35
-    warning_threshold: 25
-    critical_threshold: 30
-  humidity:
-    min: 20
-    max: 80
-    warning_threshold: 60
-    critical_threshold: 75
-  co2:
-    min: 400
-    max: 2000
-    warning_threshold: 1000
-    critical_threshold: 1500
-  occupancy:
-    min: 0
-    max: 50
-    warning_threshold: 40
-    critical_threshold: 50
-
-alerts:
-  escalation_minutes:
-    warning_to_critical: 15
-    critical_to_emergency: 30
-
-mqtt:
-  broker: "localhost"
-  port: 1883
-  username: null
-  password: null
-
-database:
-  url: "sqlite:///./data/building.db"
-```
-
-### Migration Path
-
-| Phase | Focus | Deliverable |
-|-------|-------|-------------|
-| 1 | Project Setup | FastAPI + React scaffold, SQLite, config.yaml |
-| 2 | Database Models | SQLAlchemy models, Alembic migrations |
-| 3 | MQTT Ingestion | Local broker, structured topics, ingest service |
-| 4 | Deterministic Simulation | PRNG engine, 4 sensor types, state persistence |
-| 5 | REST API | CRUD endpoints, OpenAPI docs |
-| 6 | WebSocket Server | Real-time updates, subscription model |
-| 7 | Alert Engine | Rules, escalation, acknowledgment API |
-| 8 | React Dashboard | Room grid, charts, alert panel |
-| 9 | 3D Visualization | Three.js scene, room status colors |
-| 10 | Simulation Controls | Speed, seed, replay UI |
-| 11 | Historical Analytics | Trends, comparisons, exports |
-| 12 | Operator Workflow | Acknowledgment, annotations, handoff |
-| 13 | Configuration UI | Thresholds, schedules, sensor config |
-| 14 | Testing | Unit, integration, E2E, load |
-| 15 | Documentation | Architecture, API, operator guide |
-| 16 | Performance | Optimization, indexing, caching |
-| 17 | Security | Input validation, CORS, rate limiting |
-| 18 | Deployment | Docker Compose, systemd, backup |
-| 19 | Polish | Accessibility, i18n, error boundaries |
-| 20 | Handoff | Final review, demo, documentation |
-
----
-
-## Data Provenance Rules (Non-Negotiable)
-
-1. **Every reading** must have: `room_id`, `sensor_type`, `value`, `timestamp (UTC)`, `quality`
-2. **Every alert** must trace to: originating reading, rule configuration, escalation history
-3. **Every simulation state** must be: seeded, reproducible, auditable
-4. **No mock data** in production code paths - simulation is a first-class service
-5. **Schema versioning** via Alembic migrations for all database changes
-
-## Feature Status Tracking
-
-See `docs/FEATURE_STATUS.md` for current implementation status per phase.
+## Legacy
+`app.py`, `sensor.py` and `templates/` at the repo root are the original Flask prototype. They are unused by NEXUS and left in place for review.

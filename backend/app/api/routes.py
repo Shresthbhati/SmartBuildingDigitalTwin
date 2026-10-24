@@ -1,5 +1,10 @@
+import math
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.events import bus
+from app.core.recent_errors import recent_errors
+from app.core.security import Principal, require_admin, require_operator
+from app.core.timeutil import as_utc
 from app.models.sensor import ActivityLog, RoomStatus, SensorReading
 from app.schemas.alert import (
     AlertAcknowledgeRequest,
@@ -41,6 +46,7 @@ from app.schemas.sensor import (
     RoomStatusResponse,
     SensorReadingResponse,
 )
+from app.services import topology_service
 from app.services.alert_service import alert_service
 from app.services.anomaly_service import anomaly_service
 from app.services.mqtt_service import mqtt_service
@@ -54,17 +60,41 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
+def _mqtt_status() -> str:
+    """'bypassed' = the simulator ingests in-process, so no broker is expected."""
+    if mqtt_service.connected:
+        return "connected"
+    if settings.simulator.enabled and settings.simulator.transport == "direct":
+        return "bypassed"
+    return "disconnected"
+
+
+def _actor(principal: Principal, body_actor: str | None) -> str | None:
+    """With auth on, the actor is always the token's user. With auth off (local dev) the
+    request body may name one, falling back to the anonymous principal."""
+    if settings.auth.enabled:
+        return principal.username
+    return body_actor or principal.username
+
+
+def _require_location(db: Session, room: str) -> None:
+    if room not in topology_service.location_codes(db):
+        raise HTTPException(status_code=404, detail=f"Room {room} not found")
+
+
 @router.get("/health", response_model=HealthResponse)
 def health_check(db: Session = Depends(get_db)):
     db_status = "connected"
-    mqtt_status = "connected" if mqtt_service.connected else "disconnected"
+    mqtt_status = _mqtt_status()
     try:
         db.execute(text("SELECT 1"))
     except Exception:
         db_status = "error"
 
     return HealthResponse(
-        status="healthy" if db_status == "connected" and mqtt_status == "connected" else "degraded",
+        status="healthy"
+        if db_status == "connected" and mqtt_status in ("connected", "bypassed")
+        else "degraded",
         version="1.0.0",
         database=db_status,
         mqtt=mqtt_status,
@@ -74,31 +104,27 @@ def health_check(db: Session = Depends(get_db)):
 @router.get("/health/detailed")
 def detailed_health_check(db: Session = Depends(get_db)):
     db_status = "connected"
-    mqtt_status = "connected" if mqtt_service.connected else "disconnected"
+    mqtt_status = _mqtt_status()
     simulator_status = "running" if sensor_simulator.running else "stopped"
     last_ingestion = None
     latest_event = None
     last_retention_run = None
-    recent_errors = []
 
     try:
         db.execute(text("SELECT 1"))
 
-        # Get last ingestion timestamp
         last_reading = (
             db.query(SensorReading).order_by(desc(SensorReading.ingestion_timestamp)).first()
         )
         if last_reading:
-            last_ingestion = last_reading.ingestion_timestamp.isoformat()
+            last_ingestion = as_utc(last_reading.ingestion_timestamp).isoformat()
 
-        # Get latest event timestamp
         latest_reading = (
             db.query(SensorReading).order_by(desc(SensorReading.event_timestamp)).first()
         )
         if latest_reading:
-            latest_event = latest_reading.event_timestamp.isoformat()
+            latest_event = as_utc(latest_reading.event_timestamp).isoformat()
 
-        # Get retention info
         last_retention_run = (
             retention_service.last_run.isoformat() if retention_service.last_run else None
         )
@@ -108,99 +134,77 @@ def detailed_health_check(db: Session = Depends(get_db)):
 
     return {
         "status": "healthy"
-        if db_status == "connected" and mqtt_status == "connected"
+        if db_status == "connected" and mqtt_status in ("connected", "bypassed")
         else "degraded",
         "version": "1.0.0",
         "database": db_status,
         "mqtt": mqtt_status,
         "simulator": simulator_status,
+        "simulator_transport": settings.simulator.transport,
         "last_ingestion": last_ingestion,
         "latest_event_timestamp": latest_event,
         "last_retention_run": last_retention_run,
-        "recent_errors": recent_errors,
+        "websocket_clients": bus.subscriber_count,
+        "event_seq": bus.seq,
+        "recent_errors": recent_errors.snapshot(),
     }
 
 
+def _ceil5(value: float) -> float:
+    return float(math.ceil(value / 5.0) * 5)
+
+
 @router.get("/api/layout", response_model=BuildingLayoutResponse)
-def get_building_layout():
-    """Get building layout metadata including floors, rooms, and sensor relationships.
-
-    This endpoint provides the authoritative source for room identity and layout.
-    Frontend should not hardcode room definitions.
-    """
-    from app.core.config import settings
-
-    # Build layout from simulator sensor config which is the source of truth
-    floors_map: dict[int, dict] = {}
-
-    for sensor in settings.simulator.sensors:
-        # Extract floor from room ID (room101 -> floor 0, room201 -> floor 1)
-        room_id = sensor.room
-        floor_num = 0
-        if room_id.startswith("room"):
-            try:
-                floor_digit = int(room_id[4:5])
-                floor_num = floor_digit - 1
-            except (ValueError, IndexError):
-                floor_num = 0
-
-        if floor_num not in floors_map:
-            floors_map[floor_num] = {
-                "level": floor_num,
-                "name": f"Floor {floor_num}" if floor_num > 0 else "Ground Floor",
-                "height": floor_num * 4.0,
-                "rooms": [],
-            }
-
-        # Calculate position based on room index within floor
-        floor_rooms = [
-            s for s in settings.simulator.sensors if s.room.startswith(f"room{floor_num + 1}")
-        ]
-        room_index = floor_rooms.index(sensor)
-        col = room_index % 2
-        row = room_index // 2
-
-        floors_map[floor_num]["rooms"].append(
-            BuildingRoomResponse(
-                id=sensor.room,
-                name=sensor.room.upper().replace("ROOM", "Room "),
-                floor=floor_num,
-                position_x=2.5 + col * 10.0,
-                position_y=0.0,
-                position_z=2.5 + row * 7.5,
-                size_x=5.0,
-                size_y=3.0,
-                size_z=5.0,
-                sensor_id=sensor.sensor_id,
+def get_building_layout(db: Session = Depends(get_db)):
+    """Building geometry from the canonical topology (kept for older clients; prefer /api/topology)."""
+    tree = topology_service.get_topology_tree(db)
+    floors = []
+    max_x = max_z = 0.0
+    floor_height = 4.0
+    for f in tree["floors"]:
+        floor_height = f["height_m"]
+        rooms = []
+        for r in f["rooms"]:
+            temp = next((s for s in r["sensors"] if s["type"] == "temperature"), None)
+            rooms.append(
+                BuildingRoomResponse(
+                    id=r["code"],
+                    name=r["name"],
+                    floor=f["level"],
+                    position_x=r["x"],
+                    position_y=0.0,
+                    position_z=r["z"],
+                    size_x=r["width"],
+                    size_y=3.0,
+                    size_z=r["depth"],
+                    sensor_id=temp["sensor_id"] if temp else None,
+                )
+            )
+            max_x = max(max_x, r["x"] + r["width"] / 2)
+            max_z = max(max_z, r["z"] + r["depth"] / 2)
+        for a in f["assets"]:
+            max_x = max(max_x, a["x"] + 2.0)
+            max_z = max(max_z, a["z"] + 2.0)
+        floors.append(
+            BuildingFloorResponse(
+                level=f["level"], name=f["name"], height=f["elevation_m"], rooms=rooms
             )
         )
-
-    floors = [floors_map[k] for k in sorted(floors_map.keys())]
-
     return BuildingLayoutResponse(
-        floors=[
-            BuildingFloorResponse(
-                level=f["level"],
-                name=f["name"],
-                height=f["height"],
-                rooms=f["rooms"],
-            )
-            for f in floors
-        ],
+        floors=floors,
         dimensions={
-            "width": 20.0,
-            "depth": 15.0,
-            "floorHeight": 4.0,
+            "width": _ceil5(max_x) if max_x else 20.0,
+            "depth": _ceil5(max_z) if max_z else 15.0,
+            "floorHeight": floor_height,
         },
     )
 
 
 @router.get("/api/latest", response_model=list[LatestDataResponse])
 def get_latest_data(db: Session = Depends(get_db)):
-    rooms = settings.simulation_rooms
     result = []
 
-    for room in rooms:
+    for room in topology_service.room_codes(db):
         status_record = db.query(RoomStatus).filter(RoomStatus.room == room).first()
         if status_record:
             result.append(
@@ -232,8 +236,7 @@ def get_room_history(
     limit: int = Query(default=100, ge=1, le=1000),
     db: Session = Depends(get_db),
 ):
-    if room not in settings.simulation_rooms:
-        raise HTTPException(status_code=404, detail=f"Room {room} not found")
+    _require_location(db, room)
 
     # Validate time range
     if start and end and end < start:
@@ -276,7 +279,7 @@ def get_all_history(
         raise HTTPException(status_code=400, detail="End time must be after start time")
 
     result = []
-    for room in settings.simulation_rooms:
+    for room in topology_service.room_codes(db):
         query = db.query(SensorReading).filter(
             SensorReading.room == room,
             SensorReading.measurement == measurement,
@@ -317,8 +320,7 @@ def get_telemetry_aggregate(
     source: ReadingSource | None = Query(default=None),
     db: Session = Depends(get_db),
 ):
-    if room not in settings.simulation_rooms:
-        raise HTTPException(status_code=404, detail=f"Room {room} not found")
+    _require_location(db, room)
 
     if end < start:
         raise HTTPException(status_code=400, detail="End time must be after start time")
@@ -349,14 +351,11 @@ def get_telemetry_aggregate(
         query = query.filter(SensorReading.source == source)
 
     # Bucket in Python: SQLite has no EXTRACT(epoch ...). SQLite returns naive datetimes (UTC).
-    def _utc(dt: datetime) -> datetime:
-        return dt.replace(tzinfo=UTC) if dt.tzinfo is None else dt.astimezone(UTC)
-
-    start_utc = _utc(start)
+    start_utc = as_utc(start)
     interval_seconds = interval_minutes * 60
     groups: dict[int, list[SensorReading]] = {}
     for r in query.all():
-        idx = int((_utc(r.event_timestamp) - start_utc).total_seconds() // interval_seconds)
+        idx = int((as_utc(r.event_timestamp) - start_utc).total_seconds() // interval_seconds)
         groups.setdefault(idx, []).append(r)
 
     buckets = []
@@ -405,10 +404,9 @@ def get_activity_log(
 
 @router.get("/api/status", response_model=list[RoomStatusResponse])
 def get_room_status(db: Session = Depends(get_db)):
-    rooms = settings.simulation_rooms
     result = []
 
-    for room in rooms:
+    for room in topology_service.room_codes(db):
         status_record = db.query(RoomStatus).filter(RoomStatus.room == room).first()
         if status_record:
             result.append(RoomStatusResponse.model_validate(status_record))
@@ -440,7 +438,7 @@ def get_retention_status():
 
 
 @router.post("/api/retention/run")
-def run_retention_manually():
+def run_retention_manually(_principal: Principal = Depends(require_admin)):
     deleted_count = retention_service.run_cleanup()
     return {
         "deleted_count": deleted_count,
@@ -458,13 +456,18 @@ def list_alerts(
     alert_type: APIAlertType | None = None,
     severity: APIAlertSeverity | None = None,
     status: APIAlertStatus | None = None,
+    start: datetime | None = None,
+    end: datetime | None = None,
     limit: int = Query(default=50, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
     sort_by: str = Query(default="last_occurrence"),
     sort_order: str = Query(default="desc"),
     db: Session = Depends(get_db),
 ):
-    """List alerts with optional filtering, pagination, and stable sorting."""
+    """List alerts with optional filtering, pagination, and stable sorting.
+
+    `start`/`end` keep alerts whose [first_occurrence, last_occurrence] overlaps the window.
+    """
     allowed_sorts = {
         "id",
         "room",
@@ -486,12 +489,17 @@ def list_alerts(
             detail=f"Invalid sort_by '{sort_by}'. Allowed: {sorted(allowed_sorts)}",
         )
 
+    if start and end and end < start:
+        raise HTTPException(status_code=400, detail="End time must be after start time")
+
     filters = {
         "room": room,
         "sensor_id": sensor_id,
         "alert_type": alert_type,
         "severity": severity,
         "status": status,
+        "start": as_utc(start) if start else None,
+        "end": as_utc(end) if end else None,
         "limit": limit,
         "offset": offset,
         "sort_by": sort_by,
@@ -535,12 +543,13 @@ def get_alert(
 def acknowledge_alert(
     alert_id: int,
     request: AlertAcknowledgeRequest | None = None,
+    principal: Principal = Depends(require_operator),
     db: Session = Depends(get_db),
 ):
     """Acknowledge an OPEN or ACKNOWLEDGED alert."""
     try:
         alert = alert_service.acknowledge_alert(
-            alert_id, actor=(request.actor if request else None)
+            alert_id, actor=_actor(principal, request.actor if request else None), db=db
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from None
@@ -553,11 +562,14 @@ def acknowledge_alert(
 def resolve_alert_endpoint(
     alert_id: int,
     request: AlertResolveRequest | None = None,
+    principal: Principal = Depends(require_operator),
     db: Session = Depends(get_db),
 ):
     """Resolve an OPEN or ACKNOWLEDGED alert."""
     try:
-        alert = alert_service.resolve_alert(alert_id, actor=(request.actor if request else None))
+        alert = alert_service.resolve_alert(
+            alert_id, actor=_actor(principal, request.actor if request else None), db=db
+        )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from None
     if not alert:
@@ -617,8 +629,8 @@ def list_anomalies(
         "anomaly_category": anomaly_category,
         "severity": severity,
         "status": status,
-        "start": start,
-        "end": end,
+        "start": as_utc(start) if start else None,
+        "end": as_utc(end) if end else None,
         "limit": limit,
         "offset": offset,
         "sort_by": sort_by,
@@ -666,12 +678,13 @@ def get_anomaly(
 def acknowledge_anomaly(
     anomaly_id: int,
     request: AnomalyAcknowledgeRequest | None = None,
+    principal: Principal = Depends(require_operator),
     db: Session = Depends(get_db),
 ):
     """Acknowledge an OPEN or ACKNOWLEDGED anomaly."""
     try:
         anomaly = anomaly_service.acknowledge_anomaly(
-            anomaly_id, actor=(request.actor if request else None), db=db
+            anomaly_id, actor=_actor(principal, request.actor if request else None), db=db
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from None
@@ -684,12 +697,13 @@ def acknowledge_anomaly(
 def resolve_anomaly_endpoint(
     anomaly_id: int,
     request: AnomalyResolveRequest | None = None,
+    principal: Principal = Depends(require_operator),
     db: Session = Depends(get_db),
 ):
     """Resolve an OPEN or ACKNOWLEDGED anomaly."""
     try:
         anomaly = anomaly_service.resolve_anomaly(
-            anomaly_id, actor=(request.actor if request else None), db=db
+            anomaly_id, actor=_actor(principal, request.actor if request else None), db=db
         )
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from None
@@ -698,36 +712,43 @@ def resolve_anomaly_endpoint(
     return AnomalyResponse.model_validate(anomaly)
 
 
+# --------------------------------------------------------------------- #
+# Simulator                                                             #
+# --------------------------------------------------------------------- #
 @router.get("/api/simulator/status")
 def get_simulator_status():
     return {
         "enabled": settings.simulator.enabled,
         "running": sensor_simulator.running,
+        "transport": sensor_simulator.transport,
         "interval_seconds": settings.simulator.interval_seconds,
         "seed": settings.simulator.seed,
         "sensors": [
             {
-                "room": s.room,
+                "room": s.location,
                 "sensor_id": s.sensor_id,
+                "type": s.type,
+                "unit": s.unit,
                 "baseline": s.baseline,
                 "variation": s.variation,
-                "min_temp": s.min_temp,
-                "max_temp": s.max_temp,
+                "min_value": s.min_value,
+                "max_value": s.max_value,
             }
-            for s in settings.simulator.sensors
+            for s in sensor_simulator.sensors
         ],
         "current_temperatures": sensor_simulator.temperatures,
+        "injections": sensor_simulator.active_injections(),
     }
 
 
 @router.post("/api/simulator/start")
-def start_simulator():
+def start_simulator(_principal: Principal = Depends(require_admin)):
     sensor_simulator.start()
     return {"status": "started", "running": sensor_simulator.running}
 
 
 @router.post("/api/simulator/stop")
-def stop_simulator():
+def stop_simulator(_principal: Principal = Depends(require_admin)):
     sensor_simulator.stop()
     return {"status": "stopped", "running": sensor_simulator.running}
 

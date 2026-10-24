@@ -9,8 +9,14 @@ services:
       - ./backend:/app
       - /app/__pycache__
       - smart-building-data:/data
+      - ./config.yaml:/config/config.yaml:ro
     environment:
       - PYTHONPATH=/app
+      - CONFIG_PATH=/config/config.yaml
+      # Dev-only default. Set a real secret (and replace the demo users in config.yaml) before
+      # exposing this beyond localhost.
+      - AUTH_SECRET=${AUTH_SECRET:-dev-only-change-me}
+      - SIMULATOR_TRANSPORT=mqtt
       - MQTT_BROKER=mqtt-broker
       - MQTT_PORT=1883
       - DATABASE_URL=sqlite:////data/smart_building.db

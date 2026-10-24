@@ -39,7 +39,7 @@ export default tseslint.config(
       'prettier/prettier': 'error',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-      'react/no-unknown-property': ['error', { ignore: ['position', 'args', 'castShadow', 'receiveShadow', 'intensity', 'transparent', 'roughness', 'metalness', 'emissive', 'emissiveIntensity', 'scale', 'onPointerOver', 'onPointerOut', 'onClick', 'ref', 'makeDefault', 'target', 'enablePan', 'enableZoom', 'enableRotate', 'minPolarAngle', 'maxPolarAngle', 'minZoom', 'maxZoom', 'onChange', 'onCreated', 'colorCenterLine', 'colorGrid', 'divisions', 'size', 'floorLevel', 'floorHeight', 'wallThickness', 'buildingWidth', 'buildingDepth', 'isSelected', 'isHovered', 'onHover', 'onLeave'] }],
+      'react/no-unknown-property': ['error', { ignore: ['position', 'args', 'castShadow', 'receiveShadow', 'intensity', 'transparent', 'roughness', 'metalness', 'emissive', 'emissiveIntensity', 'scale', 'onPointerOver', 'onPointerOut', 'onClick', 'ref', 'makeDefault', 'target', 'enablePan', 'enableZoom', 'enableRotate', 'minPolarAngle', 'maxPolarAngle', 'minZoom', 'maxZoom', 'onChange', 'onCreated', 'colorCenterLine', 'colorGrid', 'divisions', 'size', 'floorLevel', 'floorHeight', 'wallThickness', 'buildingWidth', 'buildingDepth', 'isSelected', 'isHovered', 'onHover', 'onLeave', 'raycast', 'depthWrite', 'side', 'toneMapped', 'attach', 'blending', 'geometry', 'visible', 'rotation'] }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },

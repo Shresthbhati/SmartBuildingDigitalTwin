@@ -1,12 +1,21 @@
+import asyncio
+import contextlib
 import logging
+from app.api.nexus import router as nexus_router
 from app.api.routes import router
+from app.api.ws import health_publisher
+from app.api.ws import router as ws_router
+from app.core import recent_errors
 from app.core.config import settings
-from app.core.database import init_db
+from app.core.database import SessionLocal
+from app.core.events import bus
+from app.core.migrations import run_migrations
 from app.services.alert_service import alert_service
 from app.services.anomaly_service import anomaly_service
 from app.services.mqtt_service import mqtt_service
 from app.services.retention_service import retention_service
 from app.services.simulator_service import sensor_simulator
+from app.services.topology_service import seed_topology
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,14 +24,29 @@ logging.basicConfig(
     level=logging.INFO if not settings.app_debug else logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
+# SQLAlchemy and paho are chatty at DEBUG; keep them at WARNING even in debug mode.
+for noisy in ("sqlalchemy.engine", "paho"):
+    logging.getLogger(noisy).setLevel(logging.WARNING)
+recent_errors.install()
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting up Smart Building Digital Twin Backend")
-    init_db()
-    logger.info("Database initialized")
+    run_migrations()
+    logger.info("Database migrated to head")
+
+    db = SessionLocal()
+    try:
+        seed_topology(db)
+    finally:
+        db.close()
+    logger.info("Topology seeded")
+
+    # Worker threads publish events through the bus; give it the running loop.
+    bus.bind_loop(asyncio.get_running_loop())
+    health_task = asyncio.create_task(health_publisher())
 
     mqtt_service.connect()
     logger.info("MQTT service started")
@@ -43,24 +67,20 @@ async def lifespan(app: FastAPI):
 
     logger.info("Shutting down Smart Building Digital Twin Backend")
     retention_service.stop()
-    logger.info("Retention service stopped")
-
     anomaly_service.stop()
-    logger.info("Anomaly detection service stopped")
-
     alert_service.stop()
-    logger.info("Alert service stopped")
-
     sensor_simulator.stop()
-    logger.info("Sensor simulator stopped")
-
     mqtt_service.disconnect()
-    logger.info("MQTT service stopped")
+    health_task.cancel()
+    with contextlib.suppress(asyncio.CancelledError):
+        await health_task
+    bus.bind_loop(None)
+    logger.info("Shutdown complete")
 
 
 app = FastAPI(
     title="Smart Building Digital Twin API",
-    description="REST API for Smart Building Digital Twin with real-time sensor monitoring",
+    description="REST + WebSocket API for the NEXUS Smart Building Digital Twin",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -74,6 +94,8 @@ app.add_middleware(
 )
 
 app.include_router(router, prefix="")
+app.include_router(nexus_router, prefix="")
+app.include_router(ws_router, prefix="")
 
 
 @app.get("/")

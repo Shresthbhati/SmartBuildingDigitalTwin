@@ -1,6 +1,7 @@
+from app.schemas.common import UTCModel, parse_json_metadata
 from datetime import datetime
 from enum import StrEnum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class APIAnomalyCategory(StrEnum):
@@ -21,7 +22,7 @@ class APIAnomalyStatus(StrEnum):
     RESOLVED = "RESOLVED"
 
 
-class AnomalyResponse(BaseModel):
+class AnomalyResponse(UTCModel):
     id: int
     room: str
     sensor_id: str
@@ -39,15 +40,20 @@ class AnomalyResponse(BaseModel):
     expected_baseline: float
     deviation_score: float
     occurrence_count: int
-    metadata: dict | None = None
+    # ORM attribute is `metadata_json` (`metadata` is reserved by SQLAlchemy's Base).
+    metadata: dict | None = Field(default=None, validation_alias="metadata_json")
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    @field_validator("metadata", mode="before")
+    @classmethod
+    def _parse_metadata(cls, v):
+        return parse_json_metadata(v)
 
 
-class AnomalyListItem(BaseModel):
+class AnomalyListItem(UTCModel):
     id: int
     room: str
     sensor_id: str

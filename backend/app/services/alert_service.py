@@ -4,7 +4,9 @@ import threading
 import time
 from app.core.config import settings
 from app.core.database import SessionLocal
+from app.core.timeutil import as_utc
 from app.models.alert import Alert, AlertSeverity, AlertStatus, AlertType
+from app.services.lifecycle import track_transition
 from datetime import UTC, datetime, timedelta
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -29,6 +31,7 @@ class AlertService:
         self.last_error: str | None = None
         self._lock = threading.Lock()
         self._stale_sensor_cache: dict[str, datetime] = {}
+        self._started_at: datetime | None = None
 
     # ------------------------------------------------------------------ #
     # Lifecycle (start/stop) – same pattern as RetentionService/Simulator #
@@ -41,6 +44,7 @@ class AlertService:
             logger.info("Alert service disabled in config")
             return
         self.running = True
+        self._started_at = datetime.now(UTC)
         self.thread = threading.Thread(target=self._run_loop, daemon=True)
         self.thread.start()
         logger.info(
@@ -158,14 +162,21 @@ class AlertService:
             for row in rows:
                 latest_by_room[row.room] = row.latest
 
-            # Also include rooms with no readings at all
-            from app.core.config import settings as _s
+            # Also include topology rooms with no readings at all. Right after startup a
+            # never-seen room is not "stale" yet: give sensors one stale window to report.
+            from app.services.topology_service import room_codes
 
-            for room in _s.simulation_rooms:
+            in_startup_grace = (
+                self._started_at is not None and now - self._started_at <= stale_threshold
+            )
+            # Configured rooms are included too so a not-yet-seeded database still alerts.
+            known_rooms = set(room_codes(db)) | set(settings.simulation_rooms)
+            for room in sorted(known_rooms | set(latest_by_room)):
                 if room not in latest_by_room:
-                    self._handle_stale_sensor(db, room, None, now)
+                    if not in_startup_grace:
+                        self._handle_stale_sensor(db, room, None, now)
                 else:
-                    last = latest_by_room[room]
+                    last = as_utc(latest_by_room[room])  # SQLite returns naive UTC datetimes
                     if now - last > stale_threshold:
                         self._handle_stale_sensor(db, room, None, now)
                     else:
@@ -201,10 +212,17 @@ class AlertService:
                 return None
             if alert.status == AlertStatus.RESOLVED:
                 raise ValueError("Cannot acknowledge a resolved alert")
+            if alert.status == AlertStatus.ACKNOWLEDGED:
+                return alert  # idempotent: no new audit row for a no-op
+            now = datetime.now(UTC)
+            previous = alert.status
             alert.status = AlertStatus.ACKNOWLEDGED
-            alert.acknowledged_at = datetime.now(UTC)
+            alert.acknowledged_at = now
             alert.acknowledged_by = actor
-            alert.updated_at = datetime.now(UTC)
+            alert.updated_at = now
+            track_transition(
+                db, "alert", alert, previous, AlertStatus.ACKNOWLEDGED, actor, now, "acknowledged"
+            )
             db.commit()
             db.refresh(alert)
             return alert
@@ -231,9 +249,14 @@ class AlertService:
                 return None
             if alert.status == AlertStatus.RESOLVED:
                 raise ValueError("Alert is already resolved")
+            now = datetime.now(UTC)
+            previous = alert.status
             alert.status = AlertStatus.RESOLVED
-            alert.resolved_at = datetime.now(UTC)
-            alert.updated_at = datetime.now(UTC)
+            alert.resolved_at = now
+            alert.updated_at = now
+            track_transition(
+                db, "alert", alert, previous, AlertStatus.RESOLVED, actor, now, "resolved"
+            )
             db.commit()
             db.refresh(alert)
             return alert
@@ -279,14 +302,19 @@ class AlertService:
                 query = query.filter(Alert.severity == filters["severity"])
             if filters.get("status"):
                 query = query.filter(Alert.status == filters["status"])
+            # Time window: alerts whose [first_occurrence, last_occurrence] overlaps it.
+            if filters.get("start"):
+                query = query.filter(Alert.last_occurrence >= filters["start"])
+            if filters.get("end"):
+                query = query.filter(Alert.first_occurrence <= filters["end"])
 
             sort_by = filters.get("sort_by", "last_occurrence")
             sort_order = filters.get("sort_order", "desc")
             sort_col = getattr(Alert, sort_by, Alert.last_occurrence)
             if sort_order == "asc":
-                query = query.order_by(sort_col.asc())
+                query = query.order_by(sort_col.asc(), Alert.id.asc())
             else:
-                query = query.order_by(sort_col.desc())
+                query = query.order_by(sort_col.desc(), Alert.id.desc())
 
             limit = int(filters.get("limit", 50))
             offset = int(filters.get("offset", 0))
@@ -522,9 +550,14 @@ class AlertService:
             self._resolve_alert_obj(db, alert, actor=actor)
 
     def _resolve_alert_obj(self, db, alert: Alert, actor: str | None = None) -> None:
+        now = datetime.now(UTC)
+        previous = alert.status
         alert.status = AlertStatus.RESOLVED
-        alert.resolved_at = datetime.now(UTC)
-        alert.updated_at = datetime.now(UTC)
+        alert.resolved_at = now
+        alert.updated_at = now
+        track_transition(
+            db, "alert", alert, previous, AlertStatus.RESOLVED, actor or "system", now, "resolved"
+        )
 
     # ------------------------------------------------------------------ #
     # Internal CRUD helpers                                               #
@@ -576,6 +609,9 @@ class AlertService:
         )
         db.add(alert)
         db.flush()
+        track_transition(
+            db, "alert", alert, None, AlertStatus.OPEN, "system", event_timestamp, "created"
+        )
         logger.info(f"Alert created: {room}/{sensor_id} {alert_type.value} {severity.value}")
         return alert
 

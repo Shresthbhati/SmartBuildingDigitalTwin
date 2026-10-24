@@ -5,3 +5,6 @@ __pycache__/
 node_modules/
 mosquitto/data/
 mosquitto/log/
+*.db-shm
+*.db-wal
+frontend/test-results/

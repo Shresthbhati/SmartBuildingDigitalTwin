@@ -53,7 +53,7 @@ def test_status_endpoint(db_session):
 
 
 def test_layout_endpoint(db_session):
-    data = route_module.get_building_layout()
+    data = route_module.get_building_layout(db=db_session)
     floors = data.floors
     dimensions = data.dimensions
     floor_ids = [f.level for f in floors]

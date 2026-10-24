@@ -3,9 +3,12 @@ import logging
 import paho.mqtt.client as mqtt
 from app.core.config import settings
 from app.core.database import SessionLocal
+from app.core.timeutil import as_utc
 from app.models.sensor import ActivityLog, ReadingSource, RoomStatus, SensorReading
 from app.services.alert_service import alert_service
 from app.services.anomaly_service import anomaly_service
+from app.services.lifecycle import emit_after_commit
+from app.services.topology_service import touch_last_seen
 from collections.abc import Callable
 from datetime import UTC, datetime
 
@@ -57,45 +60,47 @@ class MQTTService:
             payload = message.payload.decode()
             topic_parts = message.topic.split("/")
             room = topic_parts[1] if len(topic_parts) > 1 else "unknown"
+            measurement_from_topic = topic_parts[2] if len(topic_parts) > 2 else "temperature"
 
-            # Try to parse as JSON first (new format)
             try:
                 data = json.loads(payload)
-                sensor_id = data.get("sensor_id", f"sensor-{room}")
-                measurement = data.get("measurement", "temperature")
-                value = float(data.get("value", 0))
-                unit = data.get("unit", "celsius")
-                source_str = data.get("source", "simulated")
-                source = (
-                    ReadingSource(source_str)
-                    if source_str in [s.value for s in ReadingSource]
-                    else ReadingSource.SIMULATED
-                )
-                event_timestamp_str = data.get("event_timestamp")
-                if event_timestamp_str:
-                    event_timestamp = datetime.fromisoformat(
-                        event_timestamp_str.replace("Z", "+00:00")
-                    )
-                else:
-                    event_timestamp = datetime.now(UTC)
-                idempotency_key = data.get("idempotency_key")
-            except (json.JSONDecodeError, ValueError, KeyError):
-                # Fallback to old format: plain float temperature
+                if not isinstance(data, dict):
+                    raise ValueError("payload is not an object")
+            except ValueError:
+                # Legacy format: a bare float temperature
                 logger.debug(f"Using legacy payload format for {room}")
-                value = float(payload)
-                sensor_id = f"sensor-{room}"
-                measurement = "temperature"
-                unit = "celsius"
-                source = ReadingSource.SIMULATED
-                event_timestamp = datetime.now(UTC)
-                idempotency_key = None
+                data = {"value": float(payload), "measurement": measurement_from_topic}
 
-            self._process_reading(
-                room, sensor_id, measurement, value, unit, source, event_timestamp, idempotency_key
-            )
+            data.setdefault("measurement", measurement_from_topic)
+            self.ingest(room, data)
 
         except Exception as e:
             logger.error(f"Error processing MQTT message: {e}")
+
+    def ingest(self, room: str, data: dict) -> None:
+        """Validate one telemetry payload and persist it. Shared by MQTT and in-process publishers."""
+        measurement = data.get("measurement", "temperature")
+        value = float(data["value"])
+        source_str = data.get("source", "simulated")
+        source = (
+            ReadingSource(source_str)
+            if source_str in [s.value for s in ReadingSource]
+            else ReadingSource.SIMULATED
+        )
+        ts_str = data.get("event_timestamp")
+        event_timestamp = (
+            datetime.fromisoformat(ts_str.replace("Z", "+00:00")) if ts_str else datetime.now(UTC)
+        )
+        self._process_reading(
+            data.get("room", room),
+            data.get("sensor_id", f"sensor-{room}"),
+            measurement,
+            value,
+            data.get("unit", "celsius"),
+            source,
+            as_utc(event_timestamp),
+            data.get("idempotency_key"),
+        )
 
     def _process_reading(
         self,
@@ -132,60 +137,72 @@ class MQTTService:
                 idempotency_key=idempotency_key,
             )
             db.add(reading)
+            touch_last_seen(db, sensor_id, event_timestamp)
 
-            status_record = db.query(RoomStatus).filter(RoomStatus.room == room).first()
-            if not status_record:
-                status_record = RoomStatus(room=room)
-                db.add(status_record)
+            status_value = None
+            # Room status is a temperature concept; meters and other measurements skip it.
+            if measurement == "temperature":
+                status_record = db.query(RoomStatus).filter(RoomStatus.room == room).first()
+                if not status_record:
+                    status_record = RoomStatus(room=room)
+                    db.add(status_record)
 
-            old_status = status_record.status
+                old_status = status_record.status
 
-            # Update latest state only if this reading is newer than what we have
-            if measurement == "temperature" and (
-                status_record.current_temperature is None
-                or event_timestamp
-                >= (status_record.last_updated or datetime.min.replace(tzinfo=UTC))
-            ):
-                status_record.current_temperature = value
-                status_record.last_updated = datetime.now(UTC)
+                # Update latest state only if this reading is newer than what we have
+                if (
+                    status_record.current_temperature is None
+                    or status_record.last_updated is None
+                    or event_timestamp >= as_utc(status_record.last_updated)
+                ):
+                    status_record.current_temperature = value
+                    status_record.last_updated = datetime.now(UTC)
 
-                if value > settings.threshold_high:
-                    new_status = "ALERT"
-                elif value > settings.threshold_normal:
-                    new_status = "HIGH"
-                else:
-                    new_status = "NORMAL"
-
-                status_record.status = new_status
-
-                if new_status != old_status:
-                    if new_status == "ALERT":
-                        message = f"🔴 {room} entered ALERT state at {value}°C"
-                        level = "ALERT"
-                    elif new_status == "HIGH":
-                        message = f"🟠 {room} entered HIGH temperature state at {value}°C"
-                        level = "HIGH"
+                    if value > settings.threshold_high:
+                        new_status = "ALERT"
+                    elif value > settings.threshold_normal:
+                        new_status = "HIGH"
                     else:
-                        message = f"🟢 {room} returned to NORMAL at {value}°C"
-                        level = "NORMAL"
+                        new_status = "NORMAL"
 
-                    activity = ActivityLog(room=room, message=message, level=level)
-                    db.add(activity)
+                    status_record.status = new_status
 
-                    recent_activities = (
-                        db.query(ActivityLog)
-                        .order_by(ActivityLog.timestamp.desc())
-                        .limit(settings.activity_log_limit + 1)
-                        .all()
-                    )
-                    if len(recent_activities) > settings.activity_log_limit:
-                        for old_activity in recent_activities[settings.activity_log_limit :]:
-                            db.delete(old_activity)
+                    if new_status != old_status:
+                        if new_status == "ALERT":
+                            message = f"🔴 {room} entered ALERT state at {value}°C"
+                        elif new_status == "HIGH":
+                            message = f"🟠 {room} entered HIGH temperature state at {value}°C"
+                        else:
+                            message = f"🟢 {room} returned to NORMAL at {value}°C"
+                        db.add(ActivityLog(room=room, message=message, level=new_status))
 
-            db.commit()
-            logger.info(
-                f"Processed reading: {room}/{sensor_id} = {value}{unit} (source: {source.value}, status: {status_record.status})"
+                        recent_activities = (
+                            db.query(ActivityLog)
+                            .order_by(ActivityLog.timestamp.desc())
+                            .limit(settings.activity_log_limit + 1)
+                            .all()
+                        )
+                        if len(recent_activities) > settings.activity_log_limit:
+                            for old_activity in recent_activities[settings.activity_log_limit :]:
+                                db.delete(old_activity)
+                status_value = status_record.status
+
+            emit_after_commit(
+                db,
+                "reading",
+                {
+                    "sensor_id": sensor_id,
+                    "room": room,
+                    "measurement": measurement,
+                    "value": value,
+                    "unit": unit,
+                    "source": source.value,
+                    "event_timestamp": event_timestamp.isoformat(),
+                    "room_status": status_value,
+                },
             )
+            db.commit()
+            logger.debug(f"Processed reading: {room}/{sensor_id} = {value}{unit} ({source.value})")
 
             # Evaluate alert conditions for this reading
             try:

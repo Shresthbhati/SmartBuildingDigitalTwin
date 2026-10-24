@@ -1,19 +1,50 @@
-* {
+/* NEXUS design tokens live here; component styles are in styles/nexus.css. */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 :root {
-  --bg-primary: #0f172a;
-  --bg-secondary: #1e293b;
-  --bg-card: #1e293b;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --border-color: #334155;
-  --accent-normal: #22c55e;
-  --accent-high: #f59e0b;
-  --accent-alert: #ef4444;
+  /* surfaces: graphite */
+  --bg: #0b0e13;
+  --bg-raised: #10151d;
+  --bg-panel: #151b25;
+  --bg-hover: #1b2331;
+  --line: #243044;
+  --line-strong: #34425a;
+
+  /* text */
+  --text: #e6eaf2;
+  --text-dim: #9aa6bb;
+  --text-faint: #6b778c;
+
+  /* semantic colours (always paired with an icon + label in the UI) */
+  --telemetry: #22d3ee; /* live telemetry / normal */
+  --warning: #fbbf24;
+  --critical: #f87171;
+  --stale: #7b8494; /* stale / offline */
+  --simulated: #a78bfa; /* simulated / scenario / not a real measurement */
+  --scenario: #c084fc;
+  --focus: #67e8f9;
+
+  /* type scale */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --fs-xs: 0.6875rem;
+  --fs-sm: 0.78125rem;
+  --fs-base: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.625rem;
+
+  --radius: 8px;
+  --radius-sm: 5px;
+  --gap: 12px;
+
+  color-scheme: dark;
 }
 
 html,
@@ -21,20 +52,60 @@ body,
 #root {
   width: 100%;
   height: 100%;
-  min-height: 100vh;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.5;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  display: block;
+}
+
+h1 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+h2 {
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+h3 {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

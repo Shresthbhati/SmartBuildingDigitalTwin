@@ -8,6 +8,7 @@ from sqlalchemy.sql import func
 class ReadingSource(StrEnum):
     SIMULATED = "simulated"
     MEASURED = "measured"
+    SCENARIO = "scenario"  # deliberately injected by the demo/E2E scenario endpoint
 
 
 class SensorReading(Base):

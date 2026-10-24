@@ -1,6 +1,7 @@
+from app.schemas.common import UTCModel, parse_json_metadata
 from datetime import datetime
 from enum import StrEnum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class APIAlertType(StrEnum):
@@ -24,7 +25,7 @@ class APIAlertStatus(StrEnum):
     RESOLVED = "RESOLVED"
 
 
-class AlertResponse(BaseModel):
+class AlertResponse(UTCModel):
     id: int
     room: str
     sensor_id: str
@@ -41,15 +42,20 @@ class AlertResponse(BaseModel):
     last_reading_value: float | None = None
     threshold_value: float | None = None
     occurrence_count: int
-    metadata: dict | None = None
+    # ORM attribute is `metadata_json` (`metadata` is reserved by SQLAlchemy's Base).
+    metadata: dict | None = Field(default=None, validation_alias="metadata_json")
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    @field_validator("metadata", mode="before")
+    @classmethod
+    def _parse_metadata(cls, v):
+        return parse_json_metadata(v)
 
 
-class AlertListItem(BaseModel):
+class AlertListItem(UTCModel):
     id: int
     room: str
     sensor_id: str

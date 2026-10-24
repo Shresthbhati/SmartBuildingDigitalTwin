@@ -5,6 +5,7 @@ import threading
 import time
 from app.core.config import settings
 from app.core.database import SessionLocal
+from app.core.timeutil import as_utc
 from app.models.anomaly import (
     AnomalyCategory,
     AnomalyEvent,
@@ -12,17 +13,24 @@ from app.models.anomaly import (
     AnomalyStatus,
 )
 from app.models.sensor import SensorReading
+from app.services.lifecycle import track_transition
 from datetime import UTC, datetime, timedelta
 from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
+# Floor for the baseline standard deviation: sensors report to 0.1 resolution, so a
+# perfectly flat window must not turn a 0.1 wiggle into a huge z-score.
+MIN_STDDEV = 0.1
+
+_SEVERITY_RANK = {AnomalySeverity.INFO: 0, AnomalySeverity.WARNING: 1, AnomalySeverity.CRITICAL: 2}
+
 
 class RollingWindowCache:
     """Thread-safe rolling window of recent readings per (room, sensor_id).
 
-    Maintains a bounded deque of (timestamp, value) tuples. On restart,
+    Maintains a bounded list of (timestamp, value) tuples. On restart,
     the cache can be rebuilt from the database via `load_from_db`.
     """
 
@@ -36,6 +44,7 @@ class RollingWindowCache:
 
     def add(self, room: str, sensor_id: str, timestamp: datetime, value: float):
         key = (room, sensor_id)
+        timestamp = as_utc(timestamp)
         with self._lock:
             if key not in self._windows:
                 self._windows[key] = []
@@ -61,8 +70,12 @@ class RollingWindowCache:
         """
 
         limit = limit_per_sensor or self.window_size
-        # Get distinct (room, sensor_id) pairs
-        pairs = db.query(SensorReading.room, SensorReading.sensor_id).distinct().all()
+        pairs = (
+            db.query(SensorReading.room, SensorReading.sensor_id)
+            .filter(SensorReading.measurement == "temperature")
+            .distinct()
+            .all()
+        )
         for room, sensor_id in pairs:
             readings = (
                 db.query(SensorReading.event_timestamp, SensorReading.value)
@@ -76,12 +89,11 @@ class RollingWindowCache:
             if not readings:
                 continue
             # Reverse so oldest first
-            window = [(r.event_timestamp, r.value) for r in reversed(readings)]
+            window = [(as_utc(r.event_timestamp), r.value) for r in reversed(readings)]
             key = (room, sensor_id)
             with self._lock:
                 self._windows[key] = window
-                if window:
-                    self._first_seen[key] = window[0][0]
+                self._first_seen[key] = window[0][0]
 
     def clear(self):
         with self._lock:
@@ -97,10 +109,13 @@ class AnomalyService:
 
     - Z-score spike detection (value far above baseline)
     - Z-score drop detection (value far below baseline)
-    - Sustained deviation detection (multiple consecutive abnormal readings)
+    - Moderate z-score deviation (labelled `sustained_deviation`)
     - Cooldown/deduplication to avoid duplicate events during sustained conditions
     - Recovery detection when readings return to acceptable range
     - Warm-up period to avoid false positives during sensor initialization
+
+    The baseline is computed from readings *before* the one being judged, and flagged
+    readings are kept out of the baseline, so an outlier cannot dilute its own z-score.
     """
 
     def __init__(self):
@@ -108,17 +123,18 @@ class AnomalyService:
         self.thread: threading.Thread | None = None
         self.last_run: datetime | None = None
         self.last_error: str | None = None
-        self._lock = threading.Lock()
+        self._lock = threading.RLock()
 
-        # Rolling baseline cache: (room, sensor_id) -> list of (timestamp, value)
         self._cache = RollingWindowCache(window_size=settings.anomaly_detection.rolling_window_size)
 
-        # Active anomaly tracking for deduplication:
-        # Key: (room, sensor_id, anomaly_category) -> AnomalyEvent
-        self._active_anomalies: dict[tuple[str, str, str], AnomalyEvent] = {}
-
-        # Cooldown tracking: last anomaly creation time per key
+        # Active anomalies for deduplication. Only ids are cached: ORM objects would be
+        # detached/expired once the session that loaded them closes.
+        # Key: (room, sensor_id, anomaly_category) -> AnomalyEvent.id
+        self._active: dict[tuple[str, str, str], int] = {}
+        # Cooldown tracking: wall-clock time of the last creation per key
         self._last_anomaly_time: dict[tuple[str, str, str], datetime] = {}
+        # Consecutive moderate-deviation readings per (room, sensor_id)
+        self._streaks: dict[tuple[str, str], int] = {}
 
     # ------------------------------------------------------------------ #
     # Lifecycle                                                          #
@@ -131,10 +147,10 @@ class AnomalyService:
             logger.info("Anomaly detection disabled in config")
             return
         self.running = True
-        # Rebuild rolling baseline from DB on restart
         db = SessionLocal()
         try:
             self._cache.load_from_db(db)
+            self._load_active(db)
         finally:
             db.close()
         self.thread = threading.Thread(target=self._run_loop, daemon=True)
@@ -154,11 +170,23 @@ class AnomalyService:
             self.thread = None
         logger.info("Anomaly detection service stopped")
 
+    def _load_active(self, db: Session) -> None:
+        """Re-adopt still-open anomalies after a restart so they are not duplicated."""
+        rows = (
+            db.query(AnomalyEvent)
+            .filter(AnomalyEvent.status.in_([AnomalyStatus.OPEN, AnomalyStatus.ACKNOWLEDGED]))
+            .all()
+        )
+        with self._lock:
+            self._active = {(r.room, r.sensor_id, r.anomaly_category.value): r.id for r in rows}
+            self._last_anomaly_time = {k: datetime.now(UTC) for k in self._active}
+
     def _run_loop(self):
         while self.running:
             start_time = time.time()
             try:
                 self._evaluate_recovery()
+                self.last_run = datetime.now(UTC)
             except Exception as e:
                 logger.error(f"Error in anomaly recovery loop: {e}")
                 with self._lock:
@@ -181,6 +209,7 @@ class AnomalyService:
         unit: str = "celsius",
         source: str = "simulated",
         event_timestamp: datetime | None = None,
+        measurement: str = "temperature",
         db: Session | None = None,
     ) -> None:
         """Evaluate a single telemetry reading for anomalies.
@@ -188,46 +217,63 @@ class AnomalyService:
         Idempotent and safe: failures do not propagate to the caller.
         Updates the rolling baseline and creates/resolves anomaly events.
         """
+        if measurement != "temperature":
+            return  # baselines and messages are temperature-specific
+
         own_session = False
         if db is None:
             db = SessionLocal()
             own_session = True
 
-        if event_timestamp is None:
-            event_timestamp = datetime.now(UTC)
+        event_timestamp = as_utc(event_timestamp) if event_timestamp else datetime.now(UTC)
 
         try:
             # 1. Skip invalid / non-finite readings - never treat missing data as zero
             if value is None or not math.isfinite(value):
                 return
 
-            # 2. Update rolling baseline cache
-            self._cache.add(room, sensor_id, event_timestamp, value)
+            # 2. Baseline from readings *before* this one
+            prior = self._cache.get_window(room, sensor_id)
+            warmed = self._is_warmed_up(room, sensor_id, event_timestamp, prior)
+            baseline = self._compute_baseline(prior) if warmed else None
 
-            # 3. Check warm-up: need min_samples and warm_up_seconds elapsed
-            if not self._is_warmed_up(room, sensor_id, event_timestamp):
+            if baseline is None:
+                self._cache.add(room, sensor_id, event_timestamp, value)
                 return
 
-            # 4. Get rolling baseline statistics
-            window = self._cache.get_window(room, sensor_id)
-            baseline = self._compute_baseline(window)
-            if baseline is None:
-                return  # Not enough data yet
-
             mean, stddev, count = baseline
+            classified = self._classify(value, mean, stddev)
 
-            # 5. Detect anomalies
-            anomaly = self._detect_anomaly(
-                room, sensor_id, value, mean, stddev, count, event_timestamp, unit
-            )
-
-            if anomaly:
-                self._upsert_anomaly(db, anomaly)
-                db.commit()
+            # A moderate deviation only counts once it has persisted: one noisy reading is
+            # not a "sustained" anything. Pending readings stay out of the baseline.
+            streak_key = (room, sensor_id)
+            if classified and classified[0] == AnomalyCategory.SUSTAINED_DEVIATION:
+                streak = self._streaks.get(streak_key, 0) + 1
+                self._streaks[streak_key] = streak
+                if streak < settings.anomaly_detection.sustained_min_readings:
+                    return
             else:
-                # No anomaly detected - check if any active anomaly should recover
-                self._check_recovery(db, room, sensor_id, value, mean, stddev, event_timestamp)
-                db.commit()
+                self._streaks[streak_key] = 0
+
+            # 3. Flagged readings stay out of the baseline so it doesn't chase the anomaly
+            if classified is None:
+                self._cache.add(room, sensor_id, event_timestamp, value)
+                self._check_recovery(db, room, sensor_id, value, mean, stddev)
+            else:
+                self._record_detection(
+                    db,
+                    room,
+                    sensor_id,
+                    value,
+                    mean,
+                    stddev,
+                    count,
+                    event_timestamp,
+                    unit,
+                    source,
+                    classified,
+                )
+            db.commit()
 
         except Exception as e:
             db.rollback()
@@ -245,10 +291,9 @@ class AnomalyService:
         db = SessionLocal()
         try:
             with self._lock:
-                active_keys = list(self._active_anomalies.keys())
+                active_keys = list(self._active.keys())
 
-            for room, sensor_id, _category in active_keys:
-                # Get latest reading for this sensor
+            for room, sensor_id, _category in set(active_keys):
                 latest = (
                     db.query(SensorReading)
                     .filter(SensorReading.room == room)
@@ -259,17 +304,11 @@ class AnomalyService:
                 )
                 if not latest:
                     continue
-
-                window = self._cache.get_window(room, sensor_id)
-                baseline = self._compute_baseline(window)
+                baseline = self._compute_baseline(self._cache.get_window(room, sensor_id))
                 if baseline is None:
                     continue
-
-                mean, stddev, count = baseline
-                value = latest.value
-                event_ts = latest.event_timestamp
-
-                self._check_recovery(db, room, sensor_id, value, mean, stddev, event_ts)
+                mean, stddev, _count = baseline
+                self._check_recovery(db, room, sensor_id, latest.value, mean, stddev)
 
             db.commit()
         except Exception as e:
@@ -281,9 +320,16 @@ class AnomalyService:
     # ------------------------------------------------------------------ #
     # Internal detection helpers                                         #
     # ------------------------------------------------------------------ #
-    def _is_warmed_up(self, room: str, sensor_id: str, now: datetime) -> bool:
+    def _is_warmed_up(
+        self,
+        room: str,
+        sensor_id: str,
+        now: datetime,
+        window: list[tuple[datetime, float]] | None = None,
+    ) -> bool:
         """Check if enough samples and warm-up time have elapsed."""
-        window = self._cache.get_window(room, sensor_id)
+        if window is None:
+            window = self._cache.get_window(room, sensor_id)
         if len(window) < settings.anomaly_detection.min_samples:
             return False
 
@@ -292,7 +338,7 @@ class AnomalyService:
             return False
 
         warm_up = timedelta(seconds=settings.anomaly_detection.warm_up_seconds)
-        return now - first_seen >= warm_up
+        return as_utc(now) - first_seen >= warm_up
 
     def _compute_baseline(
         self, window: list[tuple[datetime, float]]
@@ -307,21 +353,29 @@ class AnomalyService:
         values = [v for _, v in window]
         count = len(values)
         mean = sum(values) / count
-
-        if count < 2:
-            return mean, 0.0, count
-
         variance = sum((v - mean) ** 2 for v in values) / (count - 1)
-        stddev = math.sqrt(variance)
+        return mean, max(math.sqrt(variance), MIN_STDDEV), count
 
-        # Avoid division by zero for constant readings
-        if stddev < 1e-9:
-            stddev = 1e-9
+    def _classify(
+        self, value: float, mean: float, stddev: float
+    ) -> tuple[AnomalyCategory, AnomalySeverity, float] | None:
+        """Map a reading to (category, severity, z-score) or None when within bounds."""
+        cfg = settings.anomaly_detection
+        signed = (value - mean) / stddev
+        z = abs(signed)
+        threshold = cfg.spike_threshold if signed > 0 else cfg.drop_threshold
 
-        return mean, stddev, count
+        if z > threshold:
+            category = AnomalyCategory.Z_SCORE_SPIKE if signed > 0 else AnomalyCategory.Z_SCORE_DROP
+            severity = AnomalySeverity.CRITICAL if z > threshold * 1.5 else AnomalySeverity.WARNING
+            return category, severity, z
+        if z > cfg.z_score_threshold:
+            return AnomalyCategory.SUSTAINED_DEVIATION, AnomalySeverity.WARNING, z
+        return None
 
-    def _detect_anomaly(
+    def _record_detection(
         self,
+        db: Session,
         room: str,
         sensor_id: str,
         value: float,
@@ -330,112 +384,93 @@ class AnomalyService:
         count: int,
         event_timestamp: datetime,
         unit: str,
-    ) -> dict | None:
-        """Detect if a reading is anomalous based on z-score and thresholds.
+        source: str,
+        classified: tuple[AnomalyCategory, AnomalySeverity, float],
+    ) -> None:
+        category, severity, z = classified
+        cfg = settings.anomaly_detection
+        key = (room, sensor_id, category.value)
+        cooldown = timedelta(seconds=cfg.cooldown_seconds)
+        now = datetime.now(UTC)
 
-        Returns an anomaly dict or None if no anomaly.
-        """
-        z_threshold = settings.anomaly_detection.z_score_threshold
-        spike_threshold = settings.anomaly_detection.spike_threshold
-        drop_threshold = settings.anomaly_detection.drop_threshold
+        with self._lock:
+            active_id = self._active.get(key)
+            last_time = self._last_anomaly_time.get(key)
 
-        # Compute z-score
-        z_score = abs(value - mean) / stddev if stddev > 0 else 0.0
+        existing = db.get(AnomalyEvent, active_id) if active_id is not None else None
+        if existing is not None and existing.status == AnomalyStatus.RESOLVED:
+            self._forget(existing)
+            existing = None
 
-        # Determine anomaly category and severity
-        anomaly_category = None
-        severity = None
-        deviation_score = z_score
-
-        if z_score > spike_threshold:
-            # Strong spike
-            anomaly_category = AnomalyCategory.Z_SCORE_SPIKE
-            severity = (
-                AnomalySeverity.CRITICAL
-                if z_score > spike_threshold * 1.5
-                else AnomalySeverity.WARNING
-            )
-            deviation_score = z_score
-        elif z_score > drop_threshold:
-            # Strong drop (value significantly below baseline)
-            anomaly_category = AnomalyCategory.Z_SCORE_DROP
-            severity = (
-                AnomalySeverity.CRITICAL
-                if z_score > drop_threshold * 1.5
-                else AnomalySeverity.WARNING
-            )
-            deviation_score = z_score
-        elif z_score > z_threshold:
-            # Moderate deviation - check if sustained
-            anomaly_category = AnomalyCategory.SUSTAINED_DEVIATION
-            severity = AnomalySeverity.WARNING
-            deviation_score = z_score
-        else:
-            return None  # Within normal bounds
-
-        # Determine cooldown key
-        cooldown_key = (room, sensor_id, anomaly_category.value)
-        cooldown = timedelta(seconds=settings.anomaly_detection.cooldown_seconds)
-
-        # Check if we already have an active anomaly of this type for this sensor
-        active = self._active_anomalies.get(cooldown_key)
-        if active:
-            # Update existing anomaly - don't create duplicate
-            now = datetime.now(UTC)
-            last_time = self._last_anomaly_time.get(cooldown_key)
+        if existing is not None:
             if last_time and now - last_time < cooldown:
-                # Still within cooldown - just update occurrence metadata
-                active.last_observed_at = event_timestamp
-                active.observed_value = value
-                active.deviation_score = deviation_score
-                active.occurrence_count = min(
-                    active.occurrence_count + 1, settings.alerts.max_occurrence_count
+                # Same condition still ongoing: fold into the existing event.
+                existing.last_observed_at = event_timestamp
+                existing.observed_value = value
+                existing.deviation_score = max(existing.deviation_score, z)
+                if _SEVERITY_RANK[severity] > _SEVERITY_RANK[existing.severity]:
+                    existing.severity = severity
+                existing.occurrence_count = min(
+                    existing.occurrence_count + 1, settings.alerts.max_occurrence_count
                 )
-                active.updated_at = now
-                return {
-                    "action": "update_existing",
-                    "anomaly": active,
-                }
-            # Cooldown expired - treat as new occurrence but resolve old first
-            self._resolve_anomaly_obj(db=None, anomaly=active)  # Will be committed by caller
-            # Fall through to create new
+                existing.updated_at = now
+                return
+            # Cooldown expired while still abnormal: close the old event, open a new one.
+            self._resolve_anomaly_obj(db, existing, actor="system", at=event_timestamp)
 
-        # Create new anomaly event
         title, description = self._build_anomaly_message(
-            room, sensor_id, anomaly_category, severity, value, mean, z_score
+            room, sensor_id, category, severity, value, mean, z
         )
-
         metadata = {
             "detection_method": "z_score",
-            "z_score": round(z_score, 4),
+            "z_score": round(z, 4),
             "rolling_mean": round(mean, 4),
             "rolling_stddev": round(stddev, 4),
             "sample_count": count,
-            "threshold_used": spike_threshold
-            if anomaly_category == AnomalyCategory.Z_SCORE_SPIKE
-            else z_threshold,
-            "unit": unit,
-        }
-
-        return {
-            "action": "create_new",
-            "anomaly": {
-                "room": room,
-                "sensor_id": sensor_id,
-                "anomaly_category": anomaly_category,
-                "severity": severity,
-                "title": title,
-                "description": description,
-                "status": AnomalyStatus.OPEN,
-                "detected_at": event_timestamp,
-                "last_observed_at": event_timestamp,
-                "observed_value": value,
-                "expected_baseline": mean,
-                "deviation_score": deviation_score,
-                "occurrence_count": 1,
-                "metadata_json": json.dumps(metadata),
+            "window_size": cfg.rolling_window_size,
+            "threshold_used": cfg.spike_threshold
+            if category == AnomalyCategory.Z_SCORE_SPIKE
+            else cfg.drop_threshold
+            if category == AnomalyCategory.Z_SCORE_DROP
+            else cfg.z_score_threshold,
+            "detector_config": {
+                "z_score_threshold": cfg.z_score_threshold,
+                "spike_threshold": cfg.spike_threshold,
+                "drop_threshold": cfg.drop_threshold,
+                "min_samples": cfg.min_samples,
+                "cooldown_seconds": cfg.cooldown_seconds,
             },
+            "unit": unit,
+            "source": source,
         }
+        anomaly = AnomalyEvent(
+            room=room,
+            sensor_id=sensor_id,
+            anomaly_category=category,
+            severity=severity,
+            title=title,
+            description=description,
+            status=AnomalyStatus.OPEN,
+            detected_at=event_timestamp,
+            last_observed_at=event_timestamp,
+            observed_value=value,
+            expected_baseline=mean,
+            deviation_score=z,
+            occurrence_count=1,
+            metadata_json=json.dumps(metadata),
+        )
+        db.add(anomaly)
+        db.flush()
+        track_transition(
+            db, "anomaly", anomaly, None, AnomalyStatus.OPEN, "system", event_timestamp, "created"
+        )
+        with self._lock:
+            self._active[key] = anomaly.id
+            self._last_anomaly_time[key] = now
+
+        logger.info(
+            f"Anomaly created: {room}/{sensor_id} {category.value} {severity.value} (z={z:.2f})"
+        )
 
     def _check_recovery(
         self,
@@ -445,71 +480,52 @@ class AnomalyService:
         value: float,
         mean: float,
         stddev: float,
-        event_timestamp: datetime,
     ):
-        """Check if any active anomalies for this sensor should be resolved
-        because the reading has returned to acceptable range."""
-        recovery_window = settings.anomaly_detection.recovery_window
-        z_threshold = settings.anomaly_detection.z_score_threshold
-
+        """Resolve active anomalies for this sensor once the reading is back near baseline."""
         # An anomaly is considered recovered when the reading is within
-        # recovery_window * stddev of the baseline (more lenient than detection)
-        recovery_z_threshold = max(1.0, z_threshold - recovery_window * 0.1)
+        # recovery_z_threshold * stddev of the baseline (more lenient than detection)
+        cfg = settings.anomaly_detection
+        recovery_z_threshold = max(1.0, cfg.z_score_threshold - cfg.recovery_window * 0.1)
 
         with self._lock:
-            active_for_sensor = [
-                (k, a)
-                for k, a in self._active_anomalies.items()
-                if k[0] == room and k[1] == sensor_id
-            ]
+            ids = [(k, i) for k, i in self._active.items() if k[0] == room and k[1] == sensor_id]
 
-        for _key, anomaly in active_for_sensor:
-            z_score = abs(value - mean) / stddev if stddev > 0 else 0.0
-            if z_score <= recovery_z_threshold:
-                self._resolve_anomaly_obj(db, anomaly)
+        z = abs(value - mean) / stddev
+        for key, anomaly_id in ids:
+            anomaly = db.get(AnomalyEvent, anomaly_id)
+            if anomaly is None or anomaly.status == AnomalyStatus.RESOLVED:
+                with self._lock:
+                    self._active.pop(key, None)
+                    self._last_anomaly_time.pop(key, None)
+            elif z <= recovery_z_threshold:
+                self._resolve_anomaly_obj(db, anomaly, actor="system")
 
-    def _upsert_anomaly(self, db: Session, result: dict):
-        """Insert or update an anomaly event in the database."""
-        action = result["action"]
-        anomaly_data = result["anomaly"]
-
-        if action == "update_existing":
-            anomaly = anomaly_data
-            db.add(anomaly)
-            db.flush()
-            return anomaly
-
-        # Create new
-        anomaly = AnomalyEvent(**anomaly_data)
-        db.add(anomaly)
-        db.flush()
-
-        # Track in memory for deduplication
-        cooldown_key = (anomaly.room, anomaly.sensor_id, anomaly.anomaly_category.value)
+    def _forget(self, anomaly: AnomalyEvent) -> None:
+        key = (anomaly.room, anomaly.sensor_id, anomaly.anomaly_category.value)
         with self._lock:
-            self._active_anomalies[cooldown_key] = anomaly
-            self._last_anomaly_time[cooldown_key] = datetime.now(UTC)
+            if self._active.get(key) == anomaly.id:
+                self._active.pop(key, None)
+                self._last_anomaly_time.pop(key, None)
 
-        logger.info(
-            f"Anomaly created: {anomaly.room}/{anomaly.sensor_id} "
-            f"{anomaly.anomaly_category.value} {anomaly.severity.value} "
-            f"(z={anomaly.deviation_score:.2f})"
-        )
-        return anomaly
-
-    def _resolve_anomaly_obj(self, db: Session, anomaly: AnomalyEvent):
-        """Resolve an anomaly event in-place."""
+    def _resolve_anomaly_obj(
+        self,
+        db: Session,
+        anomaly: AnomalyEvent,
+        actor: str | None = "system",
+        at: datetime | None = None,
+    ):
+        """Resolve an anomaly event in-place and record the transition."""
+        now = at or datetime.now(UTC)
+        previous = anomaly.status
         anomaly.status = AnomalyStatus.RESOLVED
-        anomaly.resolved_at = datetime.now(UTC)
+        anomaly.resolved_at = now
         anomaly.updated_at = datetime.now(UTC)
         db.add(anomaly)
         db.flush()
-
-        cooldown_key = (anomaly.room, anomaly.sensor_id, anomaly.anomaly_category.value)
-        with self._lock:
-            self._active_anomalies.pop(cooldown_key, None)
-            self._last_anomaly_time.pop(cooldown_key, None)
-
+        track_transition(
+            db, "anomaly", anomaly, previous, AnomalyStatus.RESOLVED, actor, now, "resolved"
+        )
+        self._forget(anomaly)
         logger.info(f"Anomaly resolved: {anomaly.id} ({anomaly.room}/{anomaly.sensor_id})")
 
     # ------------------------------------------------------------------ #
@@ -528,10 +544,24 @@ class AnomalyService:
                 return None
             if anomaly.status == AnomalyStatus.RESOLVED:
                 raise ValueError("Cannot acknowledge a resolved anomaly")
+            if anomaly.status == AnomalyStatus.ACKNOWLEDGED:
+                return anomaly  # idempotent: no new audit row for a no-op
+            now = datetime.now(UTC)
+            previous = anomaly.status
             anomaly.status = AnomalyStatus.ACKNOWLEDGED
-            anomaly.acknowledged_at = datetime.now(UTC)
+            anomaly.acknowledged_at = now
             anomaly.acknowledged_by = actor
-            anomaly.updated_at = datetime.now(UTC)
+            anomaly.updated_at = now
+            track_transition(
+                db,
+                "anomaly",
+                anomaly,
+                previous,
+                AnomalyStatus.ACKNOWLEDGED,
+                actor,
+                now,
+                "acknowledged",
+            )
             db.commit()
             db.refresh(anomaly)
             return anomaly
@@ -555,9 +585,7 @@ class AnomalyService:
                 return None
             if anomaly.status == AnomalyStatus.RESOLVED:
                 raise ValueError("Anomaly is already resolved")
-            anomaly.status = AnomalyStatus.RESOLVED
-            anomaly.resolved_at = datetime.now(UTC)
-            anomaly.updated_at = datetime.now(UTC)
+            self._resolve_anomaly_obj(db, anomaly, actor=actor)
             db.commit()
             db.refresh(anomaly)
             return anomaly
@@ -608,9 +636,9 @@ class AnomalyService:
             sort_order = filters.get("sort_order", "desc")
             sort_col = getattr(AnomalyEvent, sort_by, AnomalyEvent.detected_at)
             if sort_order == "asc":
-                query = query.order_by(sort_col.asc())
+                query = query.order_by(sort_col.asc(), AnomalyEvent.id.asc())
             else:
-                query = query.order_by(sort_col.desc())
+                query = query.order_by(sort_col.desc(), AnomalyEvent.id.desc())
 
             limit = int(filters.get("limit", 50))
             offset = int(filters.get("offset", 0))
