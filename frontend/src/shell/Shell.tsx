@@ -147,7 +147,7 @@ function ConnectionPill() {
 
 function AuthChip() {
   const { session, authEnabled, promptLogin } = useCan();
-  if (!authEnabled) return <span className="chip dim">Auth off (dev)</span>;
+  if (!authEnabled) return null; // sign-in is switched off (config.yaml auth.enabled)
   return session ? (
     <span className="auth-chip">
       <span title={`Role: ${session.role}`}>

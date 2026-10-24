@@ -267,7 +267,7 @@ maintenance:
 # Authentication. DEV-ONLY demo users and secret: set AUTH_SECRET and replace users
 # before exposing this beyond localhost. Reads are open; mutating endpoints need a token.
 auth:
-  enabled: true
+  enabled: false
   secret: "dev-only-change-me"
   token_minutes: 480
   users:

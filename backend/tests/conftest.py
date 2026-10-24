@@ -41,10 +41,15 @@ def db_session(engine):
 def _reset_process_state():
     """Module-level singletons (login throttle, event bus) must not leak between tests."""
     from app.api import nexus
+    from app.core.config import settings
 
+    # The shipped config runs with sign-in off; the auth code stays and stays tested.
+    was_enabled = settings.auth.enabled
+    settings.auth.enabled = True
     nexus._failures.clear()
     yield
     nexus._failures.clear()
+    settings.auth.enabled = was_enabled
 
 
 @pytest.fixture
