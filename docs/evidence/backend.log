@@ -1,0 +1,357 @@
+
+===== start 2026-10-28T14:17:33.205959+00:00 =====
+INFO:     Started server process [30568]
+INFO:     Waiting for application startup.
+2026-10-28 19:47:34,987 - app.main - INFO - Starting up Smart Building Digital Twin Backend
+2026-10-28 19:47:34,993 - alembic.runtime.migration - INFO - Context impl SQLiteImpl.
+2026-10-28 19:47:34,993 - alembic.runtime.migration - INFO - Will assume non-transactional DDL.
+2026-10-28 19:47:35,001 - alembic.runtime.migration - INFO - Running upgrade  -> 0001, baseline: full schema incl. topology, lifecycle audit and scenario runs
+2026-10-28 19:47:35,047 - alembic.runtime.migration - DEBUG - new branch insert 0001
+2026-10-28 19:47:35,048 - app.main - INFO - Database migrated to head
+2026-10-28 19:47:35,076 - app.main - INFO - Topology seeded
+2026-10-28 19:47:35,077 - app.services.mqtt_service - INFO - Connecting to MQTT broker at 127.0.0.1:18830
+2026-10-28 19:47:35,077 - app.main - INFO - MQTT service started
+2026-10-28 19:47:35,083 - app.services.simulator_service - INFO - Simulator connecting to MQTT broker at 127.0.0.1:18830
+2026-10-28 19:47:35,083 - app.services.simulator_service - INFO - Sensor simulator started: 10 sensors, interval=5s, seed=42, transport=mqtt
+2026-10-28 19:47:35,083 - app.main - INFO - Sensor simulator started
+2026-10-28 19:47:35,085 - app.services.alert_service - INFO - Alert service started: eval_interval=30s, stale_sensor_seconds=120
+2026-10-28 19:47:35,085 - app.main - INFO - Alert service started
+2026-10-28 19:47:35,090 - app.services.mqtt_service - INFO - Connected to MQTT broker, subscribed to building/+/+
+2026-10-28 19:47:35,102 - app.services.anomaly_service - INFO - Anomaly detection service started: window=20, z_threshold=3.0, cooldown=300s
+2026-10-28 19:47:35,102 - app.main - INFO - Anomaly detection service started
+2026-10-28 19:47:35,103 - app.services.retention_service - INFO - Retention service started: raw_telemetry_days=30, cleanup_interval_hours=6, batch_size=1000, dry_run=False
+2026-10-28 19:47:35,103 - app.main - INFO - Retention service started
+INFO:     Application startup complete.
+2026-10-28 19:47:35,103 - app.services.retention_service - INFO - Retention cleanup completed: deleted 0 records
+INFO:     Uvicorn running on http://127.0.0.1:18000 (Press CTRL+C to quit)
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f0/power_kw: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f1/power_kw: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room101/temperature: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room102/temperature: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room103/temperature: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room104/temperature: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room201/temperature: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room202/temperature: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room203/temperature: 4
+2026-10-28 19:47:35,104 - app.services.simulator_service - ERROR - Failed to publish to building/room204/temperature: 4
+2026-10-28 19:47:35,110 - app.services.simulator_service - INFO - Simulator connected to MQTT broker
+2026-10-28 19:47:35,116 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.52kW (simulated)
+2026-10-28 19:47:35,121 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 4.29kW (simulated)
+2026-10-28 19:47:35,128 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 21.3celsius (simulated)
+2026-10-28 19:47:35,132 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 20.8celsius (simulated)
+2026-10-28 19:47:35,137 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 23.9celsius (simulated)
+2026-10-28 19:47:35,141 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.9celsius (simulated)
+2026-10-28 19:47:35,145 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 23.2celsius (simulated)
+2026-10-28 19:47:35,149 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.5celsius (simulated)
+2026-10-28 19:47:35,153 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 22.7celsius (simulated)
+2026-10-28 19:47:35,157 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.6celsius (simulated)
+INFO:     127.0.0.1:49874 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:47:40,091 - app.services.simulator_service - DEBUG - Published power-meter-f0: 5.85 to building/meter-f0/power_kw
+2026-10-28 19:47:40,091 - app.services.simulator_service - DEBUG - Published power-meter-f1: 4.96 to building/meter-f1/power_kw
+2026-10-28 19:47:40,092 - app.services.simulator_service - DEBUG - Published temp-sensor-101: 20.0 to building/room101/temperature
+2026-10-28 19:47:40,092 - app.services.simulator_service - DEBUG - Published temp-sensor-102: 20.2 to building/room102/temperature
+2026-10-28 19:47:40,092 - app.services.simulator_service - DEBUG - Published temp-sensor-103: 24.3 to building/room103/temperature
+2026-10-28 19:47:40,092 - app.services.simulator_service - DEBUG - Published temp-sensor-104: 22.9 to building/room104/temperature
+2026-10-28 19:47:40,095 - app.services.simulator_service - DEBUG - Published temp-sensor-201: 22.2 to building/room201/temperature
+2026-10-28 19:47:40,095 - app.services.simulator_service - DEBUG - Published temp-sensor-202: 20.9 to building/room202/temperature
+2026-10-28 19:47:40,096 - app.services.simulator_service - DEBUG - Published temp-sensor-203: 23.9 to building/room203/temperature
+2026-10-28 19:47:40,096 - app.services.simulator_service - DEBUG - Published temp-sensor-204: 20.7 to building/room204/temperature
+2026-10-28 19:47:40,097 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 5.85kW (simulated)
+2026-10-28 19:47:40,103 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 4.96kW (simulated)
+2026-10-28 19:47:40,109 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 20.0celsius (simulated)
+2026-10-28 19:47:40,133 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 20.2celsius (simulated)
+2026-10-28 19:47:40,140 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 24.3celsius (simulated)
+2026-10-28 19:47:40,148 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.9celsius (simulated)
+2026-10-28 19:47:40,157 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 22.2celsius (simulated)
+2026-10-28 19:47:40,172 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.9celsius (simulated)
+2026-10-28 19:47:40,184 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 23.9celsius (simulated)
+2026-10-28 19:47:40,192 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 20.7celsius (simulated)
+2026-10-28 19:47:45,098 - app.services.simulator_service - DEBUG - Published power-meter-f0: 6.79 to building/meter-f0/power_kw
+2026-10-28 19:47:45,099 - app.services.simulator_service - DEBUG - Published power-meter-f1: 5.23 to building/meter-f1/power_kw
+2026-10-28 19:47:45,099 - app.services.simulator_service - DEBUG - Published temp-sensor-101: 19.8 to building/room101/temperature
+2026-10-28 19:47:45,099 - app.services.simulator_service - DEBUG - Published temp-sensor-102: 19.6 to building/room102/temperature
+2026-10-28 19:47:45,099 - app.services.simulator_service - DEBUG - Published temp-sensor-103: 25.8 to building/room103/temperature
+2026-10-28 19:47:45,102 - app.services.simulator_service - DEBUG - Published temp-sensor-104: 22.5 to building/room104/temperature
+2026-10-28 19:47:45,102 - app.services.simulator_service - DEBUG - Published temp-sensor-201: 20.9 to building/room201/temperature
+2026-10-28 19:47:45,102 - app.services.simulator_service - DEBUG - Published temp-sensor-202: 20.0 to building/room202/temperature
+2026-10-28 19:47:45,103 - app.services.simulator_service - DEBUG - Published temp-sensor-203: 25.0 to building/room203/temperature
+2026-10-28 19:47:45,103 - app.services.simulator_service - DEBUG - Published temp-sensor-204: 21.2 to building/room204/temperature
+2026-10-28 19:47:45,103 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.79kW (simulated)
+2026-10-28 19:47:45,109 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 5.23kW (simulated)
+2026-10-28 19:47:45,114 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 19.8celsius (simulated)
+2026-10-28 19:47:45,116 - app.services.alert_service - INFO - Alert created: room101/temp-sensor-101 invalid_reading WARNING
+2026-10-28 19:47:45,121 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 19.6celsius (simulated)
+2026-10-28 19:47:45,122 - app.services.alert_service - INFO - Alert created: room102/temp-sensor-102 invalid_reading WARNING
+2026-10-28 19:47:45,126 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 25.8celsius (simulated)
+2026-10-28 19:47:45,132 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.5celsius (simulated)
+2026-10-28 19:47:45,136 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 20.9celsius (simulated)
+2026-10-28 19:47:45,140 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.0celsius (simulated)
+2026-10-28 19:47:45,144 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 25.0celsius (simulated)
+2026-10-28 19:47:45,149 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.2celsius (simulated)
+2026-10-28 19:47:50,121 - app.services.simulator_service - DEBUG - Published power-meter-f0: 6.79 to building/meter-f0/power_kw
+2026-10-28 19:47:50,123 - app.services.simulator_service - DEBUG - Published power-meter-f1: 5.27 to building/meter-f1/power_kw
+2026-10-28 19:47:50,124 - app.services.simulator_service - DEBUG - Published temp-sensor-101: 20.2 to building/room101/temperature
+2026-10-28 19:47:50,124 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.79kW (simulated)
+2026-10-28 19:47:50,126 - app.services.simulator_service - DEBUG - Published temp-sensor-102: 21.0 to building/room102/temperature
+2026-10-28 19:47:50,127 - app.services.simulator_service - DEBUG - Published temp-sensor-103: 24.9 to building/room103/temperature
+2026-10-28 19:47:50,128 - app.services.simulator_service - DEBUG - Published temp-sensor-104: 22.6 to building/room104/temperature
+2026-10-28 19:47:50,128 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 5.27kW (simulated)
+2026-10-28 19:47:50,129 - app.services.simulator_service - DEBUG - Published temp-sensor-201: 22.1 to building/room201/temperature
+2026-10-28 19:47:50,129 - app.services.simulator_service - DEBUG - Published temp-sensor-202: 20.5 to building/room202/temperature
+2026-10-28 19:47:50,129 - app.services.simulator_service - DEBUG - Published temp-sensor-203: 26.0 to building/room203/temperature
+2026-10-28 19:47:50,131 - app.services.simulator_service - DEBUG - Published temp-sensor-204: 21.5 to building/room204/temperature
+2026-10-28 19:47:50,138 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 20.2celsius (simulated)
+2026-10-28 19:47:50,145 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 21.0celsius (simulated)
+2026-10-28 19:47:50,153 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 24.9celsius (simulated)
+2026-10-28 19:47:50,157 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.6celsius (simulated)
+2026-10-28 19:47:50,161 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 22.1celsius (simulated)
+2026-10-28 19:47:50,165 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.5celsius (simulated)
+2026-10-28 19:47:50,170 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 26.0celsius (simulated)
+2026-10-28 19:47:50,175 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.5celsius (simulated)
+INFO:     127.0.0.1:53915 - "GET /api/latest HTTP/1.1" 200 OK
+2026-10-28 19:47:52,190 - app.services.mqtt_service - DEBUG - Using legacy payload format for room101
+2026-10-28 19:47:52,190 - app.services.mqtt_service - ERROR - Error processing MQTT message: could not convert string to float: '{not json at all'
+2026-10-28 19:47:52,190 - app.services.mqtt_service - ERROR - Error processing MQTT message: 'value'
+2026-10-28 19:47:52,193 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 23.4celsius (simulated)
+2026-10-28 19:47:52,195 - app.services.mqtt_service - DEBUG - Duplicate reading ignored: evidence-dup-1793197072
+2026-10-28 19:47:52,195 - app.services.mqtt_service - DEBUG - Using legacy payload format for room101
+2026-10-28 19:47:52,197 - app.services.mqtt_service - DEBUG - Processed reading: room101/sensor-room101 = 24.5celsius (simulated)
+2026-10-28 19:47:55,133 - app.services.simulator_service - DEBUG - Published power-meter-f0: 6.63 to building/meter-f0/power_kw
+2026-10-28 19:47:55,134 - app.services.simulator_service - DEBUG - Published power-meter-f1: 4.31 to building/meter-f1/power_kw
+2026-10-28 19:47:55,134 - app.services.simulator_service - DEBUG - Published temp-sensor-101: 19.7 to building/room101/temperature
+2026-10-28 19:47:55,134 - app.services.simulator_service - DEBUG - Published temp-sensor-102: 20.6 to building/room102/temperature
+2026-10-28 19:47:55,134 - app.services.simulator_service - DEBUG - Published temp-sensor-103: 23.1 to building/room103/temperature
+2026-10-28 19:47:55,134 - app.services.simulator_service - DEBUG - Published temp-sensor-104: 22.1 to building/room104/temperature
+2026-10-28 19:47:55,134 - app.services.simulator_service - DEBUG - Published temp-sensor-201: 20.9 to building/room201/temperature
+2026-10-28 19:47:55,135 - app.services.simulator_service - DEBUG - Published temp-sensor-202: 20.1 to building/room202/temperature
+2026-10-28 19:47:55,136 - app.services.simulator_service - DEBUG - Published temp-sensor-203: 26.0 to building/room203/temperature
+2026-10-28 19:47:55,136 - app.services.simulator_service - DEBUG - Published temp-sensor-204: 21.4 to building/room204/temperature
+2026-10-28 19:47:55,139 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.63kW (simulated)
+2026-10-28 19:47:55,142 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 4.31kW (simulated)
+2026-10-28 19:47:55,148 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 19.7celsius (simulated)
+2026-10-28 19:47:55,150 - app.services.alert_service - INFO - Alert created: room101/temp-sensor-101 invalid_reading WARNING
+2026-10-28 19:47:55,153 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 20.6celsius (simulated)
+2026-10-28 19:47:55,157 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 23.1celsius (simulated)
+2026-10-28 19:47:55,162 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.1celsius (simulated)
+2026-10-28 19:47:55,165 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 20.9celsius (simulated)
+2026-10-28 19:47:55,169 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.1celsius (simulated)
+2026-10-28 19:47:55,172 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 26.0celsius (simulated)
+2026-10-28 19:47:55,176 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.4celsius (simulated)
+INFO:     127.0.0.1:53921 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:47:55,240 - app.services.simulator_service - WARNING - Simulator disconnected from MQTT broker: Unspecified error
+2026-10-28 19:47:55,240 - app.services.mqtt_service - WARNING - Disconnected from MQTT broker: Unspecified error
+INFO:     127.0.0.1:53923 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:48:00,138 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f0/power_kw: 4
+2026-10-28 19:48:00,138 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f1/power_kw: 4
+2026-10-28 19:48:00,138 - app.services.simulator_service - ERROR - Failed to publish to building/room101/temperature: 4
+2026-10-28 19:48:00,138 - app.services.simulator_service - ERROR - Failed to publish to building/room102/temperature: 4
+2026-10-28 19:48:00,138 - app.services.simulator_service - ERROR - Failed to publish to building/room103/temperature: 4
+2026-10-28 19:48:00,138 - app.services.simulator_service - ERROR - Failed to publish to building/room104/temperature: 4
+2026-10-28 19:48:00,138 - app.services.simulator_service - ERROR - Failed to publish to building/room201/temperature: 4
+2026-10-28 19:48:00,139 - app.services.simulator_service - ERROR - Failed to publish to building/room202/temperature: 4
+2026-10-28 19:48:00,139 - app.services.simulator_service - ERROR - Failed to publish to building/room203/temperature: 4
+2026-10-28 19:48:00,139 - app.services.simulator_service - ERROR - Failed to publish to building/room204/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f0/power_kw: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f1/power_kw: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room101/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room102/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room103/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room104/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room201/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room202/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room203/temperature: 4
+2026-10-28 19:48:05,146 - app.services.simulator_service - ERROR - Failed to publish to building/room204/temperature: 4
+INFO:     127.0.0.1:53931 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53932 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53935 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53936 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:48:08,388 - app.services.mqtt_service - INFO - Connected to MQTT broker, subscribed to building/+/+
+2026-10-28 19:48:08,388 - app.services.simulator_service - INFO - Simulator connected to MQTT broker
+2026-10-28 19:48:08,393 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.09kW (simulated)
+2026-10-28 19:48:08,398 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 4.54kW (simulated)
+2026-10-28 19:48:08,405 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 19.3celsius (simulated)
+2026-10-28 19:48:08,407 - app.services.alert_service - INFO - Alert created: room101/temp-sensor-101 invalid_reading WARNING
+2026-10-28 19:48:08,413 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 21.8celsius (simulated)
+2026-10-28 19:48:08,422 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 23.6celsius (simulated)
+2026-10-28 19:48:08,429 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.4celsius (simulated)
+2026-10-28 19:48:08,436 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 20.1celsius (simulated)
+2026-10-28 19:48:08,443 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.9celsius (simulated)
+2026-10-28 19:48:08,451 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 24.3celsius (simulated)
+2026-10-28 19:48:08,458 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.3celsius (simulated)
+2026-10-28 19:48:08,465 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 7.08kW (simulated)
+2026-10-28 19:48:08,473 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 5.15kW (simulated)
+2026-10-28 19:48:08,480 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 19.9celsius (simulated)
+2026-10-28 19:48:08,482 - app.services.alert_service - INFO - Alert created: room101/temp-sensor-101 invalid_reading WARNING
+2026-10-28 19:48:08,486 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 22.2celsius (simulated)
+2026-10-28 19:48:08,493 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 24.7celsius (simulated)
+2026-10-28 19:48:08,499 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 23.0celsius (simulated)
+2026-10-28 19:48:08,511 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 19.6celsius (simulated)
+2026-10-28 19:48:08,513 - app.services.alert_service - INFO - Alert created: room201/temp-sensor-201 invalid_reading WARNING
+2026-10-28 19:48:08,520 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 19.9celsius (simulated)
+2026-10-28 19:48:08,521 - app.services.alert_service - INFO - Alert created: room202/temp-sensor-202 invalid_reading WARNING
+2026-10-28 19:48:08,524 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 23.4celsius (simulated)
+2026-10-28 19:48:08,531 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.0celsius (simulated)
+INFO:     127.0.0.1:53937 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:48:10,156 - app.services.simulator_service - DEBUG - Published power-meter-f0: 5.84 to building/meter-f0/power_kw
+2026-10-28 19:48:10,156 - app.services.simulator_service - DEBUG - Published power-meter-f1: 5.57 to building/meter-f1/power_kw
+2026-10-28 19:48:10,157 - app.services.simulator_service - DEBUG - Published temp-sensor-101: 21.3 to building/room101/temperature
+2026-10-28 19:48:10,157 - app.services.simulator_service - DEBUG - Published temp-sensor-102: 21.7 to building/room102/temperature
+2026-10-28 19:48:10,157 - app.services.simulator_service - DEBUG - Published temp-sensor-103: 25.0 to building/room103/temperature
+2026-10-28 19:48:10,157 - app.services.simulator_service - DEBUG - Published temp-sensor-104: 22.7 to building/room104/temperature
+2026-10-28 19:48:10,157 - app.services.simulator_service - DEBUG - Published temp-sensor-201: 21.2 to building/room201/temperature
+2026-10-28 19:48:10,157 - app.services.simulator_service - DEBUG - Published temp-sensor-202: 20.0 to building/room202/temperature
+2026-10-28 19:48:10,158 - app.services.simulator_service - DEBUG - Published temp-sensor-203: 22.5 to building/room203/temperature
+2026-10-28 19:48:10,158 - app.services.simulator_service - DEBUG - Published temp-sensor-204: 20.7 to building/room204/temperature
+2026-10-28 19:48:10,161 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 5.84kW (simulated)
+2026-10-28 19:48:10,165 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 5.57kW (simulated)
+2026-10-28 19:48:10,170 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 21.3celsius (simulated)
+2026-10-28 19:48:10,174 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 21.7celsius (simulated)
+2026-10-28 19:48:10,177 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 25.0celsius (simulated)
+2026-10-28 19:48:10,183 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.7celsius (simulated)
+2026-10-28 19:48:10,186 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 21.2celsius (simulated)
+2026-10-28 19:48:10,190 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.0celsius (simulated)
+2026-10-28 19:48:10,195 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 22.5celsius (simulated)
+2026-10-28 19:48:10,201 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 20.7celsius (simulated)
+
+===== start 2026-10-28T14:18:12.765375+00:00 =====
+INFO:     Started server process [27764]
+INFO:     Waiting for application startup.
+2026-10-28 19:48:14,416 - app.main - INFO - Starting up Smart Building Digital Twin Backend
+2026-10-28 19:48:14,422 - alembic.runtime.migration - INFO - Context impl SQLiteImpl.
+2026-10-28 19:48:14,422 - alembic.runtime.migration - INFO - Will assume non-transactional DDL.
+2026-10-28 19:48:14,429 - alembic.runtime.migration - INFO - Running upgrade  -> 0001, baseline: full schema incl. topology, lifecycle audit and scenario runs
+2026-10-28 19:48:14,476 - alembic.runtime.migration - DEBUG - new branch insert 0001
+2026-10-28 19:48:14,477 - app.main - INFO - Database migrated to head
+2026-10-28 19:48:14,507 - app.main - INFO - Topology seeded
+2026-10-28 19:48:14,508 - app.services.mqtt_service - INFO - Connecting to MQTT broker at 127.0.0.1:18830
+2026-10-28 19:48:14,508 - app.main - INFO - MQTT service started
+2026-10-28 19:48:14,514 - app.services.simulator_service - INFO - Simulator connecting to MQTT broker at 127.0.0.1:18830
+2026-10-28 19:48:14,515 - app.services.simulator_service - INFO - Sensor simulator started: 10 sensors, interval=5s, seed=42, transport=mqtt
+2026-10-28 19:48:14,515 - app.main - INFO - Sensor simulator started
+2026-10-28 19:48:14,517 - app.services.alert_service - INFO - Alert service started: eval_interval=30s, stale_sensor_seconds=120
+2026-10-28 19:48:14,517 - app.main - INFO - Alert service started
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f0/power_kw: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f1/power_kw: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room101/temperature: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room102/temperature: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room103/temperature: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room104/temperature: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room201/temperature: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room202/temperature: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room203/temperature: 4
+2026-10-28 19:48:14,525 - app.services.simulator_service - ERROR - Failed to publish to building/room204/temperature: 4
+2026-10-28 19:48:14,529 - app.services.anomaly_service - INFO - Anomaly detection service started: window=20, z_threshold=3.0, cooldown=300s
+2026-10-28 19:48:14,529 - app.main - INFO - Anomaly detection service started
+2026-10-28 19:48:14,529 - app.services.retention_service - INFO - Retention service started: raw_telemetry_days=30, cleanup_interval_hours=6, batch_size=1000, dry_run=False
+2026-10-28 19:48:14,530 - app.main - INFO - Retention service started
+INFO:     Application startup complete.
+2026-10-28 19:48:14,530 - app.services.retention_service - INFO - Retention cleanup completed: deleted 0 records
+INFO:     Uvicorn running on http://127.0.0.1:18000 (Press CTRL+C to quit)
+2026-10-28 19:48:19,522 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f0/power_kw: 4
+2026-10-28 19:48:19,522 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f1/power_kw: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room101/temperature: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room102/temperature: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room103/temperature: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room104/temperature: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room201/temperature: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room202/temperature: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room203/temperature: 4
+2026-10-28 19:48:19,523 - app.services.simulator_service - ERROR - Failed to publish to building/room204/temperature: 4
+INFO:     127.0.0.1:53956 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53964 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53966 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53967 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53969 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53970 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:48:24,540 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f0/power_kw: 4
+2026-10-28 19:48:24,540 - app.services.simulator_service - ERROR - Failed to publish to building/meter-f1/power_kw: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room101/temperature: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room102/temperature: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room103/temperature: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room104/temperature: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room201/temperature: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room202/temperature: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room203/temperature: 4
+2026-10-28 19:48:24,541 - app.services.simulator_service - ERROR - Failed to publish to building/room204/temperature: 4
+INFO:     127.0.0.1:53971 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53973 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53974 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53975 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:48:25,581 - app.services.mqtt_service - INFO - Connected to MQTT broker, subscribed to building/+/+
+2026-10-28 19:48:25,581 - app.services.simulator_service - INFO - Simulator connected to MQTT broker
+2026-10-28 19:48:25,591 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.52kW (simulated)
+2026-10-28 19:48:25,599 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 4.29kW (simulated)
+2026-10-28 19:48:25,611 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 21.3celsius (simulated)
+2026-10-28 19:48:25,618 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 20.8celsius (simulated)
+2026-10-28 19:48:25,626 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 23.9celsius (simulated)
+2026-10-28 19:48:25,632 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.9celsius (simulated)
+2026-10-28 19:48:25,640 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 23.2celsius (simulated)
+2026-10-28 19:48:25,647 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.5celsius (simulated)
+2026-10-28 19:48:25,655 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 22.7celsius (simulated)
+2026-10-28 19:48:25,662 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.6celsius (simulated)
+2026-10-28 19:48:25,667 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 5.85kW (simulated)
+INFO:     127.0.0.1:53978 - "GET /health HTTP/1.1" 200 OK
+2026-10-28 19:48:25,674 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 4.96kW (simulated)
+2026-10-28 19:48:25,678 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 20.0celsius (simulated)
+2026-10-28 19:48:25,684 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 20.2celsius (simulated)
+2026-10-28 19:48:25,688 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 24.3celsius (simulated)
+2026-10-28 19:48:25,692 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.9celsius (simulated)
+2026-10-28 19:48:25,695 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 22.2celsius (simulated)
+2026-10-28 19:48:25,699 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.9celsius (simulated)
+2026-10-28 19:48:25,703 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 23.9celsius (simulated)
+2026-10-28 19:48:25,708 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 20.7celsius (simulated)
+2026-10-28 19:48:25,712 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.79kW (simulated)
+2026-10-28 19:48:25,715 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 5.23kW (simulated)
+2026-10-28 19:48:25,718 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 19.8celsius (simulated)
+2026-10-28 19:48:25,719 - app.services.alert_service - INFO - Alert created: room101/temp-sensor-101 invalid_reading WARNING
+2026-10-28 19:48:25,722 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 19.6celsius (simulated)
+2026-10-28 19:48:25,724 - app.services.alert_service - INFO - Alert created: room102/temp-sensor-102 invalid_reading WARNING
+2026-10-28 19:48:25,727 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 25.8celsius (simulated)
+2026-10-28 19:48:25,731 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.5celsius (simulated)
+2026-10-28 19:48:25,735 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 20.9celsius (simulated)
+2026-10-28 19:48:25,738 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.0celsius (simulated)
+2026-10-28 19:48:25,742 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 25.0celsius (simulated)
+2026-10-28 19:48:25,746 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.2celsius (simulated)
+2026-10-28 19:48:29,567 - app.services.simulator_service - DEBUG - Published power-meter-f0: 6.79 to building/meter-f0/power_kw
+2026-10-28 19:48:29,568 - app.services.simulator_service - DEBUG - Published power-meter-f1: 5.27 to building/meter-f1/power_kw
+2026-10-28 19:48:29,570 - app.services.simulator_service - DEBUG - Published temp-sensor-101: 20.2 to building/room101/temperature
+2026-10-28 19:48:29,570 - app.services.simulator_service - DEBUG - Published temp-sensor-102: 21.0 to building/room102/temperature
+2026-10-28 19:48:29,570 - app.services.simulator_service - DEBUG - Published temp-sensor-103: 24.9 to building/room103/temperature
+2026-10-28 19:48:29,570 - app.services.simulator_service - DEBUG - Published temp-sensor-104: 22.6 to building/room104/temperature
+2026-10-28 19:48:29,570 - app.services.simulator_service - DEBUG - Published temp-sensor-201: 22.1 to building/room201/temperature
+2026-10-28 19:48:29,570 - app.services.simulator_service - DEBUG - Published temp-sensor-202: 20.5 to building/room202/temperature
+2026-10-28 19:48:29,571 - app.services.simulator_service - DEBUG - Published temp-sensor-203: 26.0 to building/room203/temperature
+2026-10-28 19:48:29,571 - app.services.simulator_service - DEBUG - Published temp-sensor-204: 21.5 to building/room204/temperature
+2026-10-28 19:48:29,572 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.79kW (simulated)
+2026-10-28 19:48:29,578 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 5.27kW (simulated)
+2026-10-28 19:48:29,585 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 20.2celsius (simulated)
+2026-10-28 19:48:29,593 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 21.0celsius (simulated)
+2026-10-28 19:48:29,602 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 24.9celsius (simulated)
+2026-10-28 19:48:29,608 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.6celsius (simulated)
+2026-10-28 19:48:29,616 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 22.1celsius (simulated)
+2026-10-28 19:48:29,625 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.5celsius (simulated)
+2026-10-28 19:48:29,635 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 26.0celsius (simulated)
+2026-10-28 19:48:29,642 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.5celsius (simulated)
+2026-10-28 19:48:34,586 - app.services.simulator_service - DEBUG - Published power-meter-f0: 6.63 to building/meter-f0/power_kw
+2026-10-28 19:48:34,587 - app.services.simulator_service - DEBUG - Published power-meter-f1: 4.31 to building/meter-f1/power_kw
+2026-10-28 19:48:34,588 - app.services.simulator_service - DEBUG - Published temp-sensor-101: 19.7 to building/room101/temperature
+2026-10-28 19:48:34,588 - app.services.mqtt_service - DEBUG - Processed reading: meter-f0/power-meter-f0 = 6.63kW (simulated)
+2026-10-28 19:48:34,590 - app.services.simulator_service - DEBUG - Published temp-sensor-102: 20.6 to building/room102/temperature
+2026-10-28 19:48:34,591 - app.services.simulator_service - DEBUG - Published temp-sensor-103: 23.1 to building/room103/temperature
+2026-10-28 19:48:34,591 - app.services.simulator_service - DEBUG - Published temp-sensor-104: 22.1 to building/room104/temperature
+2026-10-28 19:48:34,591 - app.services.simulator_service - DEBUG - Published temp-sensor-201: 20.9 to building/room201/temperature
+2026-10-28 19:48:34,591 - app.services.simulator_service - DEBUG - Published temp-sensor-202: 20.1 to building/room202/temperature
+2026-10-28 19:48:34,591 - app.services.simulator_service - DEBUG - Published temp-sensor-203: 26.0 to building/room203/temperature
+2026-10-28 19:48:34,591 - app.services.simulator_service - DEBUG - Published temp-sensor-204: 21.4 to building/room204/temperature
+2026-10-28 19:48:34,591 - app.services.mqtt_service - DEBUG - Processed reading: meter-f1/power-meter-f1 = 4.31kW (simulated)
+2026-10-28 19:48:34,597 - app.services.mqtt_service - DEBUG - Processed reading: room101/temp-sensor-101 = 19.7celsius (simulated)
+2026-10-28 19:48:34,598 - app.services.alert_service - INFO - Alert created: room101/temp-sensor-101 invalid_reading WARNING
+2026-10-28 19:48:34,601 - app.services.mqtt_service - DEBUG - Processed reading: room102/temp-sensor-102 = 20.6celsius (simulated)
+2026-10-28 19:48:34,605 - app.services.mqtt_service - DEBUG - Processed reading: room103/temp-sensor-103 = 23.1celsius (simulated)
+2026-10-28 19:48:34,609 - app.services.mqtt_service - DEBUG - Processed reading: room104/temp-sensor-104 = 22.1celsius (simulated)
+2026-10-28 19:48:34,619 - app.services.mqtt_service - DEBUG - Processed reading: room201/temp-sensor-201 = 20.9celsius (simulated)
+2026-10-28 19:48:34,625 - app.services.mqtt_service - DEBUG - Processed reading: room202/temp-sensor-202 = 20.1celsius (simulated)
+2026-10-28 19:48:34,631 - app.services.mqtt_service - DEBUG - Processed reading: room203/temp-sensor-203 = 26.0celsius (simulated)
+2026-10-28 19:48:34,638 - app.services.mqtt_service - DEBUG - Processed reading: room204/temp-sensor-204 = 21.4celsius (simulated)
+2026-10-28 19:48:37,700 - app.services.simulator_service - WARNING - Simulator disconnected from MQTT broker: Unspecified error
+2026-10-28 19:48:37,700 - app.services.mqtt_service - WARNING - Disconnected from MQTT broker: Unspecified error

@@ -17,7 +17,8 @@ Every claim is one of:
 | Alembic baseline migration at startup (also adopts pre-Alembic DBs) | Verified | fresh DB migrated and seeded on startup; upgrade of a legacy DB **not tested** |
 | `/api/layout`, `/api/topology`, `/api/sensors`, `/api/readings/latest` | Verified | `test_contract.py` |
 | MQTT ingestion with idempotency | Verified | `test_simulator.py` (via the shared ingest path) |
-| MQTT *transport* through a real Mosquitto broker | Unverified | no broker available; only the in-process `direct` transport was run |
+| MQTT *transport* through a real broker over TCP (amqtt) | Verified | `netlab/evidence.py` → `docs/evidence/RESULTS.md` (17 checks: normal flow, duplicates, malformed, broker crash/recovery, late broker start) |
+| MQTT transport through **Mosquitto** specifically | Unverified | not run; the evidence used the pure-Python amqtt broker |
 | `docker compose up` | Unverified | compose file validates; Docker daemon was not running. Fixed an empty-topology bug (config path) but not run |
 | WebSocket `/ws/events` (envelope, seq, hello, ordering, slow consumer, disconnect cleanup) | Verified | `test_event_bus.py`; live stream observed in the browser |
 | Events published only after commit, never after rollback | Verified | `test_lifecycle.py` |

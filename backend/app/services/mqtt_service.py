@@ -29,8 +29,11 @@ class MQTTService:
         self.client.on_message = self._on_message
         self.client.on_disconnect = self._on_disconnect
 
+        # connect_async + loop_start keeps retrying (bounded backoff) when the broker is down
+        # at startup or drops later; a blocking connect() would raise and never retry.
+        self.client.reconnect_delay_set(min_delay=1, max_delay=10)
         try:
-            self.client.connect(settings.mqtt_broker, settings.mqtt_port, 60)
+            self.client.connect_async(settings.mqtt_broker, settings.mqtt_port, 60)
             self.client.loop_start()
             logger.info(f"Connecting to MQTT broker at {settings.mqtt_broker}:{settings.mqtt_port}")
         except Exception as e:

@@ -85,8 +85,12 @@ class SensorSimulator:
             )
             self.client.on_connect = self._on_connect
             self.client.on_disconnect = self._on_disconnect
+            # Bounded offline queue: while the broker is down, qos=1 publishes are queued by
+            # paho; cap it so an outage cannot grow memory without limit (oldest are refused).
+            self.client.max_queued_messages_set(1000)
+            self.client.reconnect_delay_set(min_delay=1, max_delay=10)
             try:
-                self.client.connect(settings.mqtt_broker, settings.mqtt_port, 60)
+                self.client.connect_async(settings.mqtt_broker, settings.mqtt_port, 60)
                 self.client.loop_start()
                 logger.info(
                     f"Simulator connecting to MQTT broker at {settings.mqtt_broker}:{settings.mqtt_port}"

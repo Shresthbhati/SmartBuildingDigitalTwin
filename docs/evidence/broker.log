@@ -1,0 +1,964 @@
+
+===== start 2026-10-28T14:17:32.170367+00:00 =====
+C:\Users\shres\OneDrive\Desktop\codes\SmartBuildingDigitalTwin\.claude\worktrees\cn-mini-project-review-5e707b\netlab\broker.py:24: DeprecationWarning: Loading plugins from EntryPoints is deprecated and will be removed in a future version. Use `plugins` section of config instead.
+  broker = Broker(CONFIG)
+2026-10-28 19:47:32,714 WARNING amqtt.broker.plugins.auth_file: Configuration parameter 'password-file' not found
+2026-10-28 19:47:32,736 INFO transitions.core: Executed callback '<bound method Broker._log_state_change of <amqtt.broker.Broker object at 0x00000233FD61A660>>'
+2026-10-28 19:47:32,736 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:47:32,736 INFO transitions.core: Finished processing state starting enter callbacks.
+2026-10-28 19:47:32,736 INFO amqtt.broker: Listener 'default' bind to 127.0.0.1:18830 (max_connections=0)
+2026-10-28 19:47:32,736 INFO transitions.core: Finished processing state starting exit callbacks.
+2026-10-28 19:47:32,736 INFO transitions.core: Finished processing state started enter callbacks.
+2026-10-28 19:47:32,737 WARNING amqtt.broker.plugins.broker_sys: 'sys_interval' key is not set or is None
+2026-10-28 19:47:32,737 INFO netlab.broker: broker listening on 127.0.0.1:18830
+2026-10-28 19:47:32,737 INFO amqtt.broker: Starting session expiration monitor.
+2026-10-28 19:47:33,205 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:47:33,206 INFO amqtt.broker: Connection from 127.0.0.1:49859 on listener 'default'
+2026-10-28 19:47:33,206 ERROR amqtt.broker: No data from (client @=127.0.0.1:49859) : No data to decode MQTT packet fixed header
+2026-10-28 19:47:33,206 WARNING amqtt.broker: Failed to initialize client session: No data to decode MQTT packet fixed header
+2026-10-28 19:47:33,206 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+2026-10-28 19:47:35,089 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:47:35,089 INFO amqtt.broker: Connection from 127.0.0.1:49871 on listener 'default'
+2026-10-28 19:47:35,089 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:47:35,089 INFO amqtt.broker: Connection from 127.0.0.1:49872 on listener 'default'
+2026-10-28 19:47:35,089 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:47:35,089 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=smart-building-backend, state=connected)>'
+2026-10-28 19:47:35,090 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:47:35,090 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:47:35,110 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:47:35,110 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=smart-building-backend-simulator, state=connected)>'
+2026-10-28 19:47:35,110 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:47:35,110 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:47:35,385 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:47:35,386 INFO amqtt.broker: Connection from 127.0.0.1:49875 on listener 'default'
+2026-10-28 19:47:35,386 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:47:35,386 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=evidence-tap, state=connected)>'
+2026-10-28 19:47:35,386 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:47:35,386 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:47:52,157 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:47:52,157 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=evidence-tap, state=disconnected)>'
+2026-10-28 19:47:52,158 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:47:52,158 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:47:52,158 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:47:52,165 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:47:52,165 INFO amqtt.broker: Connection from 127.0.0.1:53916 on listener 'default'
+2026-10-28 19:47:52,188 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:47:52,188 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=evidence-injector, state=connected)>'
+2026-10-28 19:47:52,188 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:47:52,189 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:47:55,222 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:47:55,222 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=evidence-injector, state=disconnected)>'
+2026-10-28 19:47:55,222 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:47:55,222 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:47:55,222 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+
+===== start 2026-10-28T14:18:07.568754+00:00 =====
+C:\Users\shres\OneDrive\Desktop\codes\SmartBuildingDigitalTwin\.claude\worktrees\cn-mini-project-review-5e707b\netlab\broker.py:24: DeprecationWarning: Loading plugins from EntryPoints is deprecated and will be removed in a future version. Use `plugins` section of config instead.
+  broker = Broker(CONFIG)
+2026-10-28 19:48:08,048 WARNING amqtt.broker.plugins.auth_file: Configuration parameter 'password-file' not found
+2026-10-28 19:48:08,065 INFO transitions.core: Executed callback '<bound method Broker._log_state_change of <amqtt.broker.Broker object at 0x0000026956A0A660>>'
+2026-10-28 19:48:08,066 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:08,066 INFO transitions.core: Finished processing state starting enter callbacks.
+2026-10-28 19:48:08,066 INFO amqtt.broker: Listener 'default' bind to 127.0.0.1:18830 (max_connections=0)
+2026-10-28 19:48:08,066 INFO transitions.core: Finished processing state starting exit callbacks.
+2026-10-28 19:48:08,066 INFO transitions.core: Finished processing state started enter callbacks.
+2026-10-28 19:48:08,066 WARNING amqtt.broker.plugins.broker_sys: 'sys_interval' key is not set or is None
+2026-10-28 19:48:08,066 INFO netlab.broker: broker listening on 127.0.0.1:18830
+2026-10-28 19:48:08,066 INFO amqtt.broker: Starting session expiration monitor.
+2026-10-28 19:48:08,386 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:08,386 INFO amqtt.broker: Connection from 127.0.0.1:53929 on listener 'default'
+2026-10-28 19:48:08,387 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:48:08,387 INFO amqtt.broker: Connection from 127.0.0.1:53930 on listener 'default'
+2026-10-28 19:48:08,387 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:08,387 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=smart-building-backend, state=connected)>'
+2026-10-28 19:48:08,387 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:08,387 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:08,387 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:08,388 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=smart-building-backend-simulator, state=connected)>'
+2026-10-28 19:48:08,388 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:08,388 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:10,398 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:10,398 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=smart-building-backend, state=disconnected)>'
+2026-10-28 19:48:10,398 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:10,398 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:10,398 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=smart-building-backend-simulator, state=disconnected)>'
+2026-10-28 19:48:10,398 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:10,398 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:10,398 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:10,398 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:10,398 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+
+===== start 2026-10-28T14:18:22.871467+00:00 =====
+C:\Users\shres\OneDrive\Desktop\codes\SmartBuildingDigitalTwin\.claude\worktrees\cn-mini-project-review-5e707b\netlab\broker.py:24: DeprecationWarning: Loading plugins from EntryPoints is deprecated and will be removed in a future version. Use `plugins` section of config instead.
+  broker = Broker(CONFIG)
+2026-10-28 19:48:23,354 WARNING amqtt.broker.plugins.auth_file: Configuration parameter 'password-file' not found
+2026-10-28 19:48:23,372 INFO transitions.core: Executed callback '<bound method Broker._log_state_change of <amqtt.broker.Broker object at 0x0000019AD796A660>>'
+2026-10-28 19:48:23,372 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:23,372 INFO transitions.core: Finished processing state starting enter callbacks.
+2026-10-28 19:48:23,373 INFO amqtt.broker: Listener 'default' bind to 127.0.0.1:18830 (max_connections=0)
+2026-10-28 19:48:23,373 INFO transitions.core: Finished processing state starting exit callbacks.
+2026-10-28 19:48:23,373 INFO transitions.core: Finished processing state started enter callbacks.
+2026-10-28 19:48:23,373 WARNING amqtt.broker.plugins.broker_sys: 'sys_interval' key is not set or is None
+2026-10-28 19:48:23,373 INFO netlab.broker: broker listening on 127.0.0.1:18830
+2026-10-28 19:48:23,374 INFO amqtt.broker: Starting session expiration monitor.
+2026-10-28 19:48:23,387 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:23,387 INFO amqtt.broker: Connection from 127.0.0.1:53963 on listener 'default'
+2026-10-28 19:48:23,387 ERROR amqtt.broker: No data from (client @=127.0.0.1:53963) : No data to decode MQTT packet fixed header
+2026-10-28 19:48:23,387 WARNING amqtt.broker: Failed to initialize client session: No data to decode MQTT packet fixed header
+2026-10-28 19:48:23,387 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+2026-10-28 19:48:25,580 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:25,580 INFO amqtt.broker: Connection from 127.0.0.1:53976 on listener 'default'
+2026-10-28 19:48:25,580 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:25,580 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=smart-building-backend, state=connected)>'
+2026-10-28 19:48:25,581 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:25,581 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:48:25,581 INFO amqtt.broker: Connection from 127.0.0.1:53977 on listener 'default'
+2026-10-28 19:48:25,581 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:25,581 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:25,581 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=smart-building-backend-simulator, state=connected)>'
+2026-10-28 19:48:25,581 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:25,581 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+
+===== start 2026-10-28T14:18:37.711685+00:00 =====
+C:\Users\shres\OneDrive\Desktop\codes\SmartBuildingDigitalTwin\.claude\worktrees\cn-mini-project-review-5e707b\netlab\broker.py:24: DeprecationWarning: Loading plugins from EntryPoints is deprecated and will be removed in a future version. Use `plugins` section of config instead.
+  broker = Broker(CONFIG)
+2026-10-28 19:48:38,215 WARNING amqtt.broker.plugins.auth_file: Configuration parameter 'password-file' not found
+2026-10-28 19:48:38,233 INFO transitions.core: Executed callback '<bound method Broker._log_state_change of <amqtt.broker.Broker object at 0x0000024B3507A660>>'
+2026-10-28 19:48:38,233 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:38,233 INFO transitions.core: Finished processing state starting enter callbacks.
+2026-10-28 19:48:38,234 INFO amqtt.broker: Listener 'default' bind to 127.0.0.1:18830 (max_connections=0)
+2026-10-28 19:48:38,234 INFO transitions.core: Finished processing state starting exit callbacks.
+2026-10-28 19:48:38,234 INFO transitions.core: Finished processing state started enter callbacks.
+2026-10-28 19:48:38,234 WARNING amqtt.broker.plugins.broker_sys: 'sys_interval' key is not set or is None
+2026-10-28 19:48:38,234 INFO netlab.broker: broker listening on 127.0.0.1:18830
+2026-10-28 19:48:38,234 INFO amqtt.broker: Starting session expiration monitor.
+2026-10-28 19:48:38,738 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:38,738 INFO amqtt.broker: Connection from 127.0.0.1:53984 on listener 'default'
+2026-10-28 19:48:38,753 ERROR amqtt.broker: No data from (client @=127.0.0.1:53984) : No data to decode MQTT packet fixed header
+2026-10-28 19:48:38,753 WARNING amqtt.broker: Failed to initialize client session: No data to decode MQTT packet fixed header
+2026-10-28 19:48:38,753 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+2026-10-28 19:48:38,753 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:38,753 INFO amqtt.broker: Connection from 127.0.0.1:53985 on listener 'default'
+2026-10-28 19:48:38,754 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:38,754 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-sub-0-50, state=connected)>'
+2026-10-28 19:48:38,754 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:38,754 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:38,755 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:48:38,755 INFO amqtt.broker: Connection from 127.0.0.1:53988 on listener 'default'
+2026-10-28 19:48:38,755 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:38,755 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-0, state=connected)>'
+2026-10-28 19:48:38,755 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:38,755 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:38,756 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:48:38,756 INFO amqtt.broker: Connection from 127.0.0.1:53991 on listener 'default'
+2026-10-28 19:48:38,756 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:38,756 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-1, state=connected)>'
+2026-10-28 19:48:38,756 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:38,756 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:38,757 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:48:38,757 INFO amqtt.broker: Connection from 127.0.0.1:53994 on listener 'default'
+2026-10-28 19:48:38,758 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:38,758 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-2, state=connected)>'
+2026-10-28 19:48:38,758 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:38,758 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:38,758 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:48:38,758 INFO amqtt.broker: Connection from 127.0.0.1:53997 on listener 'default'
+2026-10-28 19:48:38,758 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:38,758 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-3, state=connected)>'
+2026-10-28 19:48:38,758 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:38,759 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:38,759 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:48:38,759 INFO amqtt.broker: Connection from 127.0.0.1:54000 on listener 'default'
+2026-10-28 19:48:38,760 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:38,760 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-4, state=connected)>'
+2026-10-28 19:48:38,760 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:38,760 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:49,210 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:49,210 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-0, state=disconnected)>'
+2026-10-28 19:48:49,210 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:49,210 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:49,210 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:48:50,223 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:50,223 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-1, state=disconnected)>'
+2026-10-28 19:48:50,223 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:50,223 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:50,224 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:48:50,255 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:50,255 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-2, state=disconnected)>'
+2026-10-28 19:48:50,255 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:50,255 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:50,255 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:48:50,301 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:50,301 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-3, state=disconnected)>'
+2026-10-28 19:48:50,301 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:50,302 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:50,302 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:48:51,315 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:51,315 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-4, state=disconnected)>'
+2026-10-28 19:48:51,315 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:51,315 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:51,315 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:52,328 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:48:52,328 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-sub-0-50, state=disconnected)>'
+2026-10-28 19:48:52,328 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:48:52,328 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:48:52,328 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+2026-10-28 19:48:52,328 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:48:52,328 INFO amqtt.broker: Connection from 127.0.0.1:54005 on listener 'default'
+2026-10-28 19:48:52,329 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:52,329 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-sub-1-50, state=connected)>'
+2026-10-28 19:48:52,329 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:52,329 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:52,331 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:48:52,331 INFO amqtt.broker: Connection from 127.0.0.1:54008 on listener 'default'
+2026-10-28 19:48:52,344 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:52,344 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-0, state=connected)>'
+2026-10-28 19:48:52,344 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:52,344 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:52,345 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:48:52,345 INFO amqtt.broker: Connection from 127.0.0.1:54011 on listener 'default'
+2026-10-28 19:48:52,346 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:52,346 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-1, state=connected)>'
+2026-10-28 19:48:52,346 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:52,346 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:52,347 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:48:52,347 INFO amqtt.broker: Connection from 127.0.0.1:54014 on listener 'default'
+2026-10-28 19:48:52,347 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:52,348 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-2, state=connected)>'
+2026-10-28 19:48:52,348 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:52,348 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:52,348 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:48:52,348 INFO amqtt.broker: Connection from 127.0.0.1:54017 on listener 'default'
+2026-10-28 19:48:52,349 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:52,349 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-3, state=connected)>'
+2026-10-28 19:48:52,349 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:52,349 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:48:52,350 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:48:52,350 INFO amqtt.broker: Connection from 127.0.0.1:54020 on listener 'default'
+2026-10-28 19:48:52,375 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:48:52,376 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-4, state=connected)>'
+2026-10-28 19:48:52,376 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:48:52,376 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,833 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:02,833 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-0, state=disconnected)>'
+2026-10-28 19:49:02,833 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:02,833 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:02,833 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:49:02,864 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:02,864 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-1, state=disconnected)>'
+2026-10-28 19:49:02,864 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:02,864 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:02,864 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:49:02,879 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:02,879 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-2, state=disconnected)>'
+2026-10-28 19:49:02,879 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:02,879 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:02,879 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:49:02,894 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:02,895 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-3, state=disconnected)>'
+2026-10-28 19:49:02,895 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:02,895 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:02,895 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:49:02,910 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:02,910 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-4, state=disconnected)>'
+2026-10-28 19:49:02,910 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:02,911 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:02,911 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:49:02,926 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:02,926 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-sub-1-50, state=disconnected)>'
+2026-10-28 19:49:02,926 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:02,926 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:02,926 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+2026-10-28 19:49:02,926 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:49:02,927 INFO amqtt.broker: Connection from 127.0.0.1:54025 on listener 'default'
+2026-10-28 19:49:02,928 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,928 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-sub-0-300, state=connected)>'
+2026-10-28 19:49:02,928 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,929 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,930 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:49:02,930 INFO amqtt.broker: Connection from 127.0.0.1:54028 on listener 'default'
+2026-10-28 19:49:02,931 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,931 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-0, state=connected)>'
+2026-10-28 19:49:02,931 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,931 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,931 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:49:02,932 INFO amqtt.broker: Connection from 127.0.0.1:54031 on listener 'default'
+2026-10-28 19:49:02,932 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,932 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-1, state=connected)>'
+2026-10-28 19:49:02,932 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,932 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,933 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:49:02,933 INFO amqtt.broker: Connection from 127.0.0.1:54034 on listener 'default'
+2026-10-28 19:49:02,933 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,933 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-2, state=connected)>'
+2026-10-28 19:49:02,934 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,934 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,934 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:49:02,934 INFO amqtt.broker: Connection from 127.0.0.1:54037 on listener 'default'
+2026-10-28 19:49:02,935 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,935 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-3, state=connected)>'
+2026-10-28 19:49:02,935 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,935 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,937 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:49:02,937 INFO amqtt.broker: Connection from 127.0.0.1:54040 on listener 'default'
+2026-10-28 19:49:02,937 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,937 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-4, state=connected)>'
+2026-10-28 19:49:02,937 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,938 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,938 INFO amqtt.broker: Listener 'default': 7/\u221e connections acquired
+2026-10-28 19:49:02,938 INFO amqtt.broker: Connection from 127.0.0.1:54043 on listener 'default'
+2026-10-28 19:49:02,939 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,939 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-5, state=connected)>'
+2026-10-28 19:49:02,939 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,939 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,940 INFO amqtt.broker: Listener 'default': 8/\u221e connections acquired
+2026-10-28 19:49:02,940 INFO amqtt.broker: Connection from 127.0.0.1:54046 on listener 'default'
+2026-10-28 19:49:02,940 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,940 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-6, state=connected)>'
+2026-10-28 19:49:02,940 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,940 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,941 INFO amqtt.broker: Listener 'default': 9/\u221e connections acquired
+2026-10-28 19:49:02,941 INFO amqtt.broker: Connection from 127.0.0.1:54049 on listener 'default'
+2026-10-28 19:49:02,942 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,942 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-7, state=connected)>'
+2026-10-28 19:49:02,942 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,942 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,943 INFO amqtt.broker: Listener 'default': 10/\u221e connections acquired
+2026-10-28 19:49:02,943 INFO amqtt.broker: Connection from 127.0.0.1:54052 on listener 'default'
+2026-10-28 19:49:02,943 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,943 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-8, state=connected)>'
+2026-10-28 19:49:02,943 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,944 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,944 INFO amqtt.broker: Listener 'default': 11/\u221e connections acquired
+2026-10-28 19:49:02,944 INFO amqtt.broker: Connection from 127.0.0.1:54055 on listener 'default'
+2026-10-28 19:49:02,945 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,945 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-9, state=connected)>'
+2026-10-28 19:49:02,945 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,945 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,945 INFO amqtt.broker: Listener 'default': 12/\u221e connections acquired
+2026-10-28 19:49:02,945 INFO amqtt.broker: Connection from 127.0.0.1:54058 on listener 'default'
+2026-10-28 19:49:02,946 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,946 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-10, state=connected)>'
+2026-10-28 19:49:02,946 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,946 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,947 INFO amqtt.broker: Listener 'default': 13/\u221e connections acquired
+2026-10-28 19:49:02,947 INFO amqtt.broker: Connection from 127.0.0.1:54061 on listener 'default'
+2026-10-28 19:49:02,947 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,947 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-11, state=connected)>'
+2026-10-28 19:49:02,947 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,948 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,948 INFO amqtt.broker: Listener 'default': 14/\u221e connections acquired
+2026-10-28 19:49:02,948 INFO amqtt.broker: Connection from 127.0.0.1:54064 on listener 'default'
+2026-10-28 19:49:02,949 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,949 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-12, state=connected)>'
+2026-10-28 19:49:02,949 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,949 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,949 INFO amqtt.broker: Listener 'default': 15/\u221e connections acquired
+2026-10-28 19:49:02,949 INFO amqtt.broker: Connection from 127.0.0.1:54067 on listener 'default'
+2026-10-28 19:49:02,950 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,950 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-13, state=connected)>'
+2026-10-28 19:49:02,950 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,950 INFO amqtt.broker: Listener 'default': 16/\u221e connections acquired
+2026-10-28 19:49:02,951 INFO amqtt.broker: Connection from 127.0.0.1:54070 on listener 'default'
+2026-10-28 19:49:02,951 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,951 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,952 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-14, state=connected)>'
+2026-10-28 19:49:02,952 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,952 INFO amqtt.broker: Listener 'default': 17/\u221e connections acquired
+2026-10-28 19:49:02,952 INFO amqtt.broker: Connection from 127.0.0.1:54073 on listener 'default'
+2026-10-28 19:49:02,952 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,953 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,953 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-15, state=connected)>'
+2026-10-28 19:49:02,953 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,953 INFO amqtt.broker: Listener 'default': 18/\u221e connections acquired
+2026-10-28 19:49:02,953 INFO amqtt.broker: Connection from 127.0.0.1:54076 on listener 'default'
+2026-10-28 19:49:02,953 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,954 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,954 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-16, state=connected)>'
+2026-10-28 19:49:02,954 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,954 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,955 INFO amqtt.broker: Listener 'default': 19/\u221e connections acquired
+2026-10-28 19:49:02,955 INFO amqtt.broker: Connection from 127.0.0.1:54079 on listener 'default'
+2026-10-28 19:49:02,955 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,956 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-17, state=connected)>'
+2026-10-28 19:49:02,956 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,956 INFO amqtt.broker: Listener 'default': 20/\u221e connections acquired
+2026-10-28 19:49:02,956 INFO amqtt.broker: Connection from 127.0.0.1:54082 on listener 'default'
+2026-10-28 19:49:02,956 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,957 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,957 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-18, state=connected)>'
+2026-10-28 19:49:02,957 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,957 INFO amqtt.broker: Listener 'default': 21/\u221e connections acquired
+2026-10-28 19:49:02,958 INFO amqtt.broker: Connection from 127.0.0.1:54085 on listener 'default'
+2026-10-28 19:49:02,958 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:02,958 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:02,959 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-19, state=connected)>'
+2026-10-28 19:49:02,959 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:02,959 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:13,440 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:13,440 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-0, state=disconnected)>'
+2026-10-28 19:49:13,440 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:13,440 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:13,440 INFO amqtt.broker: Listener 'default': 20/\u221e connections acquired
+2026-10-28 19:49:14,452 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:14,452 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-1, state=disconnected)>'
+2026-10-28 19:49:14,453 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:14,453 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:14,453 INFO amqtt.broker: Listener 'default': 19/\u221e connections acquired
+2026-10-28 19:49:15,467 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:15,467 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-2, state=disconnected)>'
+2026-10-28 19:49:15,467 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:15,467 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:15,467 INFO amqtt.broker: Listener 'default': 18/\u221e connections acquired
+2026-10-28 19:49:16,476 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:16,476 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-3, state=disconnected)>'
+2026-10-28 19:49:16,476 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:16,477 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:16,477 INFO amqtt.broker: Listener 'default': 17/\u221e connections acquired
+2026-10-28 19:49:16,492 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:16,493 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-4, state=disconnected)>'
+2026-10-28 19:49:16,493 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:16,493 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:16,493 INFO amqtt.broker: Listener 'default': 16/\u221e connections acquired
+2026-10-28 19:49:17,494 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:17,494 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-5, state=disconnected)>'
+2026-10-28 19:49:17,494 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:17,494 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:17,494 INFO amqtt.broker: Listener 'default': 15/\u221e connections acquired
+2026-10-28 19:49:17,508 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:17,508 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-6, state=disconnected)>'
+2026-10-28 19:49:17,508 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:17,508 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:17,509 INFO amqtt.broker: Listener 'default': 14/\u221e connections acquired
+2026-10-28 19:49:17,509 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:17,510 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-7, state=disconnected)>'
+2026-10-28 19:49:17,510 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:17,510 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:17,510 INFO amqtt.broker: Listener 'default': 13/\u221e connections acquired
+2026-10-28 19:49:17,510 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:17,510 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-8, state=disconnected)>'
+2026-10-28 19:49:17,510 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:17,511 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:17,511 INFO amqtt.broker: Listener 'default': 12/\u221e connections acquired
+2026-10-28 19:49:17,511 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:17,511 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-9, state=disconnected)>'
+2026-10-28 19:49:17,512 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:17,512 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:17,512 INFO amqtt.broker: Listener 'default': 11/\u221e connections acquired
+2026-10-28 19:49:17,513 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:17,513 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-10, state=disconnected)>'
+2026-10-28 19:49:17,513 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:17,513 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:17,513 INFO amqtt.broker: Listener 'default': 10/\u221e connections acquired
+2026-10-28 19:49:18,520 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:18,520 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-11, state=disconnected)>'
+2026-10-28 19:49:18,520 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:18,520 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:18,520 INFO amqtt.broker: Listener 'default': 9/\u221e connections acquired
+2026-10-28 19:49:18,551 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:18,551 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-12, state=disconnected)>'
+2026-10-28 19:49:18,551 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:18,551 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:18,551 INFO amqtt.broker: Listener 'default': 8/\u221e connections acquired
+2026-10-28 19:49:19,562 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:19,562 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-13, state=disconnected)>'
+2026-10-28 19:49:19,562 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:19,562 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:19,562 INFO amqtt.broker: Listener 'default': 7/\u221e connections acquired
+2026-10-28 19:49:20,576 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:20,576 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-14, state=disconnected)>'
+2026-10-28 19:49:20,576 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:20,576 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:20,577 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:49:21,588 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:21,588 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-15, state=disconnected)>'
+2026-10-28 19:49:21,589 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:21,589 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:21,589 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:49:22,600 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:22,600 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-16, state=disconnected)>'
+2026-10-28 19:49:22,600 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:22,600 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:22,600 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:49:23,613 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:23,613 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-17, state=disconnected)>'
+2026-10-28 19:49:23,613 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:23,613 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:23,613 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:49:23,628 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:23,628 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-18, state=disconnected)>'
+2026-10-28 19:49:23,628 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:23,628 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:23,628 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:49:24,641 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:24,641 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-19, state=disconnected)>'
+2026-10-28 19:49:24,641 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:24,641 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:24,642 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:49:25,654 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:25,654 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-sub-0-300, state=disconnected)>'
+2026-10-28 19:49:25,654 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:25,654 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:25,654 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+2026-10-28 19:49:25,655 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:49:25,655 INFO amqtt.broker: Connection from 127.0.0.1:54094 on listener 'default'
+2026-10-28 19:49:25,655 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,655 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-sub-1-300, state=connected)>'
+2026-10-28 19:49:25,655 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,656 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,660 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:49:25,660 INFO amqtt.broker: Connection from 127.0.0.1:54097 on listener 'default'
+2026-10-28 19:49:25,660 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,660 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-0, state=connected)>'
+2026-10-28 19:49:25,660 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,661 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,667 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:49:25,667 INFO amqtt.broker: Connection from 127.0.0.1:54100 on listener 'default'
+2026-10-28 19:49:25,668 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,668 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-1, state=connected)>'
+2026-10-28 19:49:25,668 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,669 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,686 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:49:25,686 INFO amqtt.broker: Connection from 127.0.0.1:54103 on listener 'default'
+2026-10-28 19:49:25,687 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,687 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-2, state=connected)>'
+2026-10-28 19:49:25,687 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,687 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,698 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:49:25,698 INFO amqtt.broker: Connection from 127.0.0.1:54106 on listener 'default'
+2026-10-28 19:49:25,699 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,699 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-3, state=connected)>'
+2026-10-28 19:49:25,699 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,700 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,700 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:49:25,700 INFO amqtt.broker: Connection from 127.0.0.1:54109 on listener 'default'
+2026-10-28 19:49:25,701 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,701 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-4, state=connected)>'
+2026-10-28 19:49:25,701 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,701 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,702 INFO amqtt.broker: Listener 'default': 7/\u221e connections acquired
+2026-10-28 19:49:25,702 INFO amqtt.broker: Connection from 127.0.0.1:54112 on listener 'default'
+2026-10-28 19:49:25,702 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,703 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-5, state=connected)>'
+2026-10-28 19:49:25,703 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,703 INFO amqtt.broker: Listener 'default': 8/\u221e connections acquired
+2026-10-28 19:49:25,703 INFO amqtt.broker: Connection from 127.0.0.1:54115 on listener 'default'
+2026-10-28 19:49:25,703 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,715 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,715 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-6, state=connected)>'
+2026-10-28 19:49:25,715 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,715 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,715 INFO amqtt.broker: Listener 'default': 9/\u221e connections acquired
+2026-10-28 19:49:25,715 INFO amqtt.broker: Connection from 127.0.0.1:54118 on listener 'default'
+2026-10-28 19:49:25,716 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,716 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-7, state=connected)>'
+2026-10-28 19:49:25,716 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,716 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,716 INFO amqtt.broker: Listener 'default': 10/\u221e connections acquired
+2026-10-28 19:49:25,716 INFO amqtt.broker: Connection from 127.0.0.1:54121 on listener 'default'
+2026-10-28 19:49:25,716 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,716 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-8, state=connected)>'
+2026-10-28 19:49:25,716 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,716 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,717 INFO amqtt.broker: Listener 'default': 11/\u221e connections acquired
+2026-10-28 19:49:25,717 INFO amqtt.broker: Connection from 127.0.0.1:54124 on listener 'default'
+2026-10-28 19:49:25,717 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,717 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-9, state=connected)>'
+2026-10-28 19:49:25,717 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,717 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,717 INFO amqtt.broker: Listener 'default': 12/\u221e connections acquired
+2026-10-28 19:49:25,717 INFO amqtt.broker: Connection from 127.0.0.1:54127 on listener 'default'
+2026-10-28 19:49:25,718 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,718 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-10, state=connected)>'
+2026-10-28 19:49:25,718 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,718 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,718 INFO amqtt.broker: Listener 'default': 13/\u221e connections acquired
+2026-10-28 19:49:25,718 INFO amqtt.broker: Connection from 127.0.0.1:54130 on listener 'default'
+2026-10-28 19:49:25,718 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,718 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-11, state=connected)>'
+2026-10-28 19:49:25,718 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,718 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,719 INFO amqtt.broker: Listener 'default': 14/\u221e connections acquired
+2026-10-28 19:49:25,719 INFO amqtt.broker: Connection from 127.0.0.1:54133 on listener 'default'
+2026-10-28 19:49:25,719 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,719 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-12, state=connected)>'
+2026-10-28 19:49:25,719 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,719 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,719 INFO amqtt.broker: Listener 'default': 15/\u221e connections acquired
+2026-10-28 19:49:25,719 INFO amqtt.broker: Connection from 127.0.0.1:54136 on listener 'default'
+2026-10-28 19:49:25,720 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,720 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-13, state=connected)>'
+2026-10-28 19:49:25,720 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,720 INFO amqtt.broker: Listener 'default': 16/\u221e connections acquired
+2026-10-28 19:49:25,720 INFO amqtt.broker: Connection from 127.0.0.1:54139 on listener 'default'
+2026-10-28 19:49:25,720 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,730 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,731 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-14, state=connected)>'
+2026-10-28 19:49:25,731 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,731 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,731 INFO amqtt.broker: Listener 'default': 17/\u221e connections acquired
+2026-10-28 19:49:25,731 INFO amqtt.broker: Connection from 127.0.0.1:54142 on listener 'default'
+2026-10-28 19:49:25,732 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,732 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-15, state=connected)>'
+2026-10-28 19:49:25,732 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,733 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,735 INFO amqtt.broker: Listener 'default': 18/\u221e connections acquired
+2026-10-28 19:49:25,735 INFO amqtt.broker: Connection from 127.0.0.1:54145 on listener 'default'
+2026-10-28 19:49:25,736 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,736 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-16, state=connected)>'
+2026-10-28 19:49:25,736 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,736 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,737 INFO amqtt.broker: Listener 'default': 19/\u221e connections acquired
+2026-10-28 19:49:25,737 INFO amqtt.broker: Connection from 127.0.0.1:54148 on listener 'default'
+2026-10-28 19:49:25,738 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,738 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-17, state=connected)>'
+2026-10-28 19:49:25,738 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,739 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,739 INFO amqtt.broker: Listener 'default': 20/\u221e connections acquired
+2026-10-28 19:49:25,739 INFO amqtt.broker: Connection from 127.0.0.1:54151 on listener 'default'
+2026-10-28 19:49:25,740 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,740 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-18, state=connected)>'
+2026-10-28 19:49:25,740 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,740 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:25,741 INFO amqtt.broker: Listener 'default': 21/\u221e connections acquired
+2026-10-28 19:49:25,741 INFO amqtt.broker: Connection from 127.0.0.1:54154 on listener 'default'
+2026-10-28 19:49:25,742 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:25,742 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-19, state=connected)>'
+2026-10-28 19:49:25,742 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:25,742 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:36,216 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:36,216 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-0, state=disconnected)>'
+2026-10-28 19:49:36,216 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:36,216 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:36,216 INFO amqtt.broker: Listener 'default': 20/\u221e connections acquired
+2026-10-28 19:49:37,229 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:37,229 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-1, state=disconnected)>'
+2026-10-28 19:49:37,230 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:37,230 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:37,230 INFO amqtt.broker: Listener 'default': 19/\u221e connections acquired
+2026-10-28 19:49:37,244 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:37,244 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-2, state=disconnected)>'
+2026-10-28 19:49:37,244 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:37,245 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:37,245 INFO amqtt.broker: Listener 'default': 18/\u221e connections acquired
+2026-10-28 19:49:38,255 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:38,255 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-3, state=disconnected)>'
+2026-10-28 19:49:38,255 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:38,255 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:38,255 INFO amqtt.broker: Listener 'default': 17/\u221e connections acquired
+2026-10-28 19:49:39,268 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:39,269 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-4, state=disconnected)>'
+2026-10-28 19:49:39,269 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:39,269 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:39,269 INFO amqtt.broker: Listener 'default': 16/\u221e connections acquired
+2026-10-28 19:49:40,280 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:40,280 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-5, state=disconnected)>'
+2026-10-28 19:49:40,281 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:40,281 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:40,281 INFO amqtt.broker: Listener 'default': 15/\u221e connections acquired
+2026-10-28 19:49:41,288 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:41,288 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-6, state=disconnected)>'
+2026-10-28 19:49:41,288 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:41,288 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:41,288 INFO amqtt.broker: Listener 'default': 14/\u221e connections acquired
+2026-10-28 19:49:41,303 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:41,303 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-7, state=disconnected)>'
+2026-10-28 19:49:41,303 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:41,303 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:41,304 INFO amqtt.broker: Listener 'default': 13/\u221e connections acquired
+2026-10-28 19:49:42,313 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:42,313 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-8, state=disconnected)>'
+2026-10-28 19:49:42,313 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:42,313 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:42,313 INFO amqtt.broker: Listener 'default': 12/\u221e connections acquired
+2026-10-28 19:49:43,323 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:43,323 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-9, state=disconnected)>'
+2026-10-28 19:49:43,324 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:43,324 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:43,324 INFO amqtt.broker: Listener 'default': 11/\u221e connections acquired
+2026-10-28 19:49:44,337 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:44,337 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-10, state=disconnected)>'
+2026-10-28 19:49:44,337 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:44,337 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:44,337 INFO amqtt.broker: Listener 'default': 10/\u221e connections acquired
+2026-10-28 19:49:45,351 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:45,351 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-11, state=disconnected)>'
+2026-10-28 19:49:45,351 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:45,352 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:45,352 INFO amqtt.broker: Listener 'default': 9/\u221e connections acquired
+2026-10-28 19:49:45,367 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:45,367 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-12, state=disconnected)>'
+2026-10-28 19:49:45,367 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:45,367 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:45,367 INFO amqtt.broker: Listener 'default': 8/\u221e connections acquired
+2026-10-28 19:49:46,373 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:46,373 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-13, state=disconnected)>'
+2026-10-28 19:49:46,373 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:46,373 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:46,374 INFO amqtt.broker: Listener 'default': 7/\u221e connections acquired
+2026-10-28 19:49:47,384 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:47,385 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-14, state=disconnected)>'
+2026-10-28 19:49:47,385 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:47,385 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:47,385 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:49:48,385 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:48,385 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-15, state=disconnected)>'
+2026-10-28 19:49:48,385 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:48,385 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:48,385 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:49:48,401 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:48,401 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-16, state=disconnected)>'
+2026-10-28 19:49:48,401 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:48,401 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:48,401 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:49:49,403 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:49,403 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-17, state=disconnected)>'
+2026-10-28 19:49:49,403 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:49,403 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:49,403 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:49:50,407 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:50,407 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-18, state=disconnected)>'
+2026-10-28 19:49:50,407 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:50,407 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:50,408 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:49:51,417 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:51,417 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-19, state=disconnected)>'
+2026-10-28 19:49:51,417 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:51,417 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:51,417 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:49:52,443 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:49:52,443 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-sub-1-300, state=disconnected)>'
+2026-10-28 19:49:52,443 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:49:52,444 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:49:52,444 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
+2026-10-28 19:49:52,445 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:49:52,445 INFO amqtt.broker: Connection from 127.0.0.1:54161 on listener 'default'
+2026-10-28 19:49:52,447 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,447 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-sub-1-1000, state=connected)>'
+2026-10-28 19:49:52,447 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,447 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,451 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:49:52,451 INFO amqtt.broker: Connection from 127.0.0.1:54164 on listener 'default'
+2026-10-28 19:49:52,451 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,451 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-0, state=connected)>'
+2026-10-28 19:49:52,452 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,452 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,452 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:49:52,452 INFO amqtt.broker: Connection from 127.0.0.1:54167 on listener 'default'
+2026-10-28 19:49:52,453 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,453 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-1, state=connected)>'
+2026-10-28 19:49:52,453 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,453 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,454 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:49:52,454 INFO amqtt.broker: Connection from 127.0.0.1:54170 on listener 'default'
+2026-10-28 19:49:52,454 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,455 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-2, state=connected)>'
+2026-10-28 19:49:52,455 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,455 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:49:52,455 INFO amqtt.broker: Connection from 127.0.0.1:54173 on listener 'default'
+2026-10-28 19:49:52,455 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,456 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,456 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-3, state=connected)>'
+2026-10-28 19:49:52,456 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,456 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,456 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:49:52,456 INFO amqtt.broker: Connection from 127.0.0.1:54176 on listener 'default'
+2026-10-28 19:49:52,457 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,457 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-4, state=connected)>'
+2026-10-28 19:49:52,457 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,457 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,458 INFO amqtt.broker: Listener 'default': 7/\u221e connections acquired
+2026-10-28 19:49:52,458 INFO amqtt.broker: Connection from 127.0.0.1:54179 on listener 'default'
+2026-10-28 19:49:52,459 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,459 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-5, state=connected)>'
+2026-10-28 19:49:52,459 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,459 INFO amqtt.broker: Listener 'default': 8/\u221e connections acquired
+2026-10-28 19:49:52,459 INFO amqtt.broker: Connection from 127.0.0.1:54182 on listener 'default'
+2026-10-28 19:49:52,459 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,463 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,463 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-6, state=connected)>'
+2026-10-28 19:49:52,463 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,463 INFO amqtt.broker: Listener 'default': 9/\u221e connections acquired
+2026-10-28 19:49:52,463 INFO amqtt.broker: Connection from 127.0.0.1:54185 on listener 'default'
+2026-10-28 19:49:52,463 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,464 INFO amqtt.broker: Listener 'default': 10/\u221e connections acquired
+2026-10-28 19:49:52,464 INFO amqtt.broker: Connection from 127.0.0.1:54188 on listener 'default'
+2026-10-28 19:49:52,464 INFO amqtt.broker: Listener 'default': 11/\u221e connections acquired
+2026-10-28 19:49:52,464 INFO amqtt.broker: Connection from 127.0.0.1:54191 on listener 'default'
+2026-10-28 19:49:52,465 INFO amqtt.broker: Listener 'default': 12/\u221e connections acquired
+2026-10-28 19:49:52,465 INFO amqtt.broker: Connection from 127.0.0.1:54194 on listener 'default'
+2026-10-28 19:49:52,465 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,465 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-7, state=connected)>'
+2026-10-28 19:49:52,465 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,466 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,466 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,466 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-8, state=connected)>'
+2026-10-28 19:49:52,466 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,467 INFO amqtt.broker: Listener 'default': 13/\u221e connections acquired
+2026-10-28 19:49:52,467 INFO amqtt.broker: Connection from 127.0.0.1:54197 on listener 'default'
+2026-10-28 19:49:52,467 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,467 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,467 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-9, state=connected)>'
+2026-10-28 19:49:52,467 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,467 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,467 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,467 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-10, state=connected)>'
+2026-10-28 19:49:52,467 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,468 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,490 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,490 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-11, state=connected)>'
+2026-10-28 19:49:52,490 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,490 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,493 INFO amqtt.broker: Listener 'default': 14/\u221e connections acquired
+2026-10-28 19:49:52,493 INFO amqtt.broker: Connection from 127.0.0.1:54200 on listener 'default'
+2026-10-28 19:49:52,494 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,494 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-12, state=connected)>'
+2026-10-28 19:49:52,494 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,494 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,496 INFO amqtt.broker: Listener 'default': 15/\u221e connections acquired
+2026-10-28 19:49:52,496 INFO amqtt.broker: Connection from 127.0.0.1:54203 on listener 'default'
+2026-10-28 19:49:52,521 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,521 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-13, state=connected)>'
+2026-10-28 19:49:52,521 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,521 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,521 INFO amqtt.broker: Listener 'default': 16/\u221e connections acquired
+2026-10-28 19:49:52,521 INFO amqtt.broker: Connection from 127.0.0.1:54206 on listener 'default'
+2026-10-28 19:49:52,523 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,523 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-14, state=connected)>'
+2026-10-28 19:49:52,523 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,523 INFO amqtt.broker: Listener 'default': 17/\u221e connections acquired
+2026-10-28 19:49:52,523 INFO amqtt.broker: Connection from 127.0.0.1:54209 on listener 'default'
+2026-10-28 19:49:52,523 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,524 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,524 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-15, state=connected)>'
+2026-10-28 19:49:52,524 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,524 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,525 INFO amqtt.broker: Listener 'default': 18/\u221e connections acquired
+2026-10-28 19:49:52,525 INFO amqtt.broker: Connection from 127.0.0.1:54212 on listener 'default'
+2026-10-28 19:49:52,525 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,525 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-16, state=connected)>'
+2026-10-28 19:49:52,525 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,526 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,526 INFO amqtt.broker: Listener 'default': 19/\u221e connections acquired
+2026-10-28 19:49:52,526 INFO amqtt.broker: Connection from 127.0.0.1:54215 on listener 'default'
+2026-10-28 19:49:52,527 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,527 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-17, state=connected)>'
+2026-10-28 19:49:52,527 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,527 INFO amqtt.broker: Listener 'default': 20/\u221e connections acquired
+2026-10-28 19:49:52,528 INFO amqtt.broker: Connection from 127.0.0.1:54218 on listener 'default'
+2026-10-28 19:49:52,528 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,529 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,529 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-18, state=connected)>'
+2026-10-28 19:49:52,529 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,529 INFO amqtt.broker: Listener 'default': 21/\u221e connections acquired
+2026-10-28 19:49:52,529 INFO amqtt.broker: Connection from 127.0.0.1:54221 on listener 'default'
+2026-10-28 19:49:52,529 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:49:52,530 INFO transitions.core: Finished processing state new exit callbacks.
+2026-10-28 19:49:52,530 INFO transitions.core: Executed callback '<bound method Session._on_enter_connected of Session(clientId=bench-pub-19, state=connected)>'
+2026-10-28 19:49:52,530 INFO transitions.core: Finished processing state connected enter callbacks.
+2026-10-28 19:49:52,530 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_connected' EVENT FIRED ###
+2026-10-28 19:50:02,049 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:02,049 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-0, state=disconnected)>'
+2026-10-28 19:50:02,049 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:02,049 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:02,050 INFO amqtt.broker: Listener 'default': 20/\u221e connections acquired
+2026-10-28 19:50:03,057 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:03,057 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-1, state=disconnected)>'
+2026-10-28 19:50:03,057 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:03,057 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:03,057 INFO amqtt.broker: Listener 'default': 19/\u221e connections acquired
+2026-10-28 19:50:04,067 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:04,068 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-2, state=disconnected)>'
+2026-10-28 19:50:04,068 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:04,068 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:04,068 INFO amqtt.broker: Listener 'default': 18/\u221e connections acquired
+2026-10-28 19:50:04,082 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:04,082 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-3, state=disconnected)>'
+2026-10-28 19:50:04,082 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:04,082 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:04,082 INFO amqtt.broker: Listener 'default': 17/\u221e connections acquired
+2026-10-28 19:50:05,083 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:05,083 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-4, state=disconnected)>'
+2026-10-28 19:50:05,083 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:05,083 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:05,083 INFO amqtt.broker: Listener 'default': 16/\u221e connections acquired
+2026-10-28 19:50:06,096 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:06,096 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-5, state=disconnected)>'
+2026-10-28 19:50:06,096 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:06,096 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:06,097 INFO amqtt.broker: Listener 'default': 15/\u221e connections acquired
+2026-10-28 19:50:07,098 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:07,098 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-6, state=disconnected)>'
+2026-10-28 19:50:07,098 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:07,099 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:07,099 INFO amqtt.broker: Listener 'default': 14/\u221e connections acquired
+2026-10-28 19:50:08,108 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:08,108 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-7, state=disconnected)>'
+2026-10-28 19:50:08,109 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:08,109 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:08,109 INFO amqtt.broker: Listener 'default': 13/\u221e connections acquired
+2026-10-28 19:50:09,116 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:09,116 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-8, state=disconnected)>'
+2026-10-28 19:50:09,116 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:09,117 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:09,117 INFO amqtt.broker: Listener 'default': 12/\u221e connections acquired
+2026-10-28 19:50:10,129 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:10,129 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-9, state=disconnected)>'
+2026-10-28 19:50:10,129 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:10,129 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:10,129 INFO amqtt.broker: Listener 'default': 11/\u221e connections acquired
+2026-10-28 19:50:11,143 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:11,143 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-10, state=disconnected)>'
+2026-10-28 19:50:11,143 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:11,143 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:11,143 INFO amqtt.broker: Listener 'default': 10/\u221e connections acquired
+2026-10-28 19:50:12,149 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:12,149 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-11, state=disconnected)>'
+2026-10-28 19:50:12,149 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:12,149 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:12,149 INFO amqtt.broker: Listener 'default': 9/\u221e connections acquired
+2026-10-28 19:50:13,156 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:13,156 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-12, state=disconnected)>'
+2026-10-28 19:50:13,156 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:13,157 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:13,157 INFO amqtt.broker: Listener 'default': 8/\u221e connections acquired
+2026-10-28 19:50:14,165 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:14,166 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-13, state=disconnected)>'
+2026-10-28 19:50:14,166 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:14,166 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:14,166 INFO amqtt.broker: Listener 'default': 7/\u221e connections acquired
+2026-10-28 19:50:15,180 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:15,180 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-14, state=disconnected)>'
+2026-10-28 19:50:15,180 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:15,180 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:15,180 INFO amqtt.broker: Listener 'default': 6/\u221e connections acquired
+2026-10-28 19:50:16,181 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:16,181 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-15, state=disconnected)>'
+2026-10-28 19:50:16,181 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:16,181 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:16,181 INFO amqtt.broker: Listener 'default': 5/\u221e connections acquired
+2026-10-28 19:50:17,193 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:17,193 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-16, state=disconnected)>'
+2026-10-28 19:50:17,193 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:17,193 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:17,193 INFO amqtt.broker: Listener 'default': 4/\u221e connections acquired
+2026-10-28 19:50:18,207 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:18,207 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-17, state=disconnected)>'
+2026-10-28 19:50:18,207 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:18,207 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:18,207 INFO amqtt.broker: Listener 'default': 3/\u221e connections acquired
+2026-10-28 19:50:19,222 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:19,222 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-18, state=disconnected)>'
+2026-10-28 19:50:19,222 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:19,222 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:19,222 INFO amqtt.broker: Listener 'default': 2/\u221e connections acquired
+2026-10-28 19:50:20,224 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:20,224 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-pub-19, state=disconnected)>'
+2026-10-28 19:50:20,224 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:20,224 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:20,224 INFO amqtt.broker: Listener 'default': 1/\u221e connections acquired
+2026-10-28 19:50:21,237 INFO transitions.core: Finished processing state connected exit callbacks.
+2026-10-28 19:50:21,237 INFO transitions.core: Executed callback '<bound method Session._on_enter_disconnected of Session(clientId=bench-sub-1-1000, state=disconnected)>'
+2026-10-28 19:50:21,237 INFO transitions.core: Finished processing state disconnected enter callbacks.
+2026-10-28 19:50:21,237 INFO amqtt.broker.plugins.event_logger_plugin: ### 'on_broker_client_disconnected' EVENT FIRED ###
+2026-10-28 19:50:21,237 INFO amqtt.broker: Listener 'default': 0/\u221e connections acquired
